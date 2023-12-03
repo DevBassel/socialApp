@@ -2,11 +2,19 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import cls from "./login.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Login() {
   const API: string = "http://127.0.0.1:3000/api/auth/google/login";
   const navigate = useNavigate();
+  const toeken: string | null = localStorage.getItem("access_token");
 
+  useEffect(() => {
+    if (toeken) {
+      console.log(toeken);
+      navigate("/profile");
+    }
+  }, [navigate, toeken]);
   return (
     <>
       {!localStorage.getItem("access_token") && (
@@ -20,7 +28,7 @@ export default function Login() {
                 });
                 if (res.status === 201) {
                   localStorage.setItem("access_token", res.data.access_token);
-                  navigate("/");
+                  navigate("/profile");
                   window.location.reload();
                 }
               }}

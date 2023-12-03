@@ -29,7 +29,8 @@ export class AuthService {
     const { email, picture, name, sub } = data.getPayload();
     const checkUser = await this.userRepo.findOneBy({ providerId: sub });
 
-    if (checkUser) return { access_token: this.jwt.sign({ sub, email }) };
+    if (checkUser)
+      return { access_token: this.jwt.sign({ sub: checkUser.id, email }) };
 
     console.log('creating user...');
     const user = this.userRepo.create({
