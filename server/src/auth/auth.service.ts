@@ -30,7 +30,10 @@ export class AuthService {
     const checkUser = await this.userRepo.findOneBy({ providerId: sub });
 
     if (checkUser)
-      return { access_token: this.jwt.sign({ sub: checkUser.id, email }) };
+      return {
+        ...checkUser,
+        access_token: this.jwt.sign({ sub: checkUser.id, email }),
+      };
 
     console.log('creating user...');
     const user = this.userRepo.create({
@@ -42,6 +45,6 @@ export class AuthService {
 
     this.userRepo.save(user);
 
-    return { access_token: this.jwt.sign({ sub, email }) };
+    return { ...user, access_token: this.jwt.sign({ sub, email }) };
   }
 }

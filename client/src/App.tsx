@@ -1,18 +1,20 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./components/home/Home";
-import Login from "./components/login/Login";
-import Profile from "./components/profile/Profile";
-
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import Profile from "./pages/profile/Profile";
+import Nav from "./components/nav/Nav";
+import { Box } from "@mui/material";
 
 function App() {
   return (
-    <>
+    <Box position={"relative"}>
+      <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
-    </>
+    </Box>
   );
 }
 

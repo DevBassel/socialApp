@@ -1,10 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
 import { Msgs } from './entities/msg.entity';
 import { UserService } from 'src/user/user.service';
 import { MsgDto } from './dtos/msg.dto';
+import { UpdateMsgDto } from './dtos/updateMsgDto';
 
 @Injectable()
 export class ChatService {
@@ -19,8 +25,16 @@ export class ChatService {
       where: [{ recieverId: user.sub }, { senderId: user.sub }],
     });
   }
-
   async createChat(recieverId: number, user: any) {
+    const checkChat = await this.chatRepo.findOne({
+      where: [
+        { recieverId, senderId: user.sub },
+        { recieverId: user.sub, senderId: recieverId },
+      ],
+    });
+
+    if (checkChat) throw new BadRequestException();
+
     const checkReciver = await this.userService.findOne(recieverId);
 
     if (!checkReciver || recieverId === user.sub)
@@ -30,6 +44,14 @@ export class ChatService {
     console.log(chat);
 
     return this.chatRepo.save(chat);
+  }
+
+  removeChat(id: number) {
+    return this.chatRepo.delete({ id });
+  }
+
+  getMsgs(chatId: number) {
+    return this.msgsRepo.findBy({ chatId });
   }
 
   async sendMsg(msgDto: MsgDto, user: any) {
@@ -59,7 +81,23 @@ export class ChatService {
     return this.msgsRepo.save(msg);
   }
 
-  removeChat(id: number) {
-    return this.chatRepo.delete({ id });
+  async updateMsg(updatedMsg: UpdateMsgDto, user: any) {
+    const checkMsg: Msgs = await this.msgsRepo.findOneBy({ id: updatedMsg.id });
+
+    if (!checkMsg) throw new NotFoundException();
+
+    if (checkMsg.senderId !== user.sub) throw new UnauthorizedException();
+
+    return this.msgsRepo.save({ ...checkMsg, content: updatedMsg.content });
+  }
+
+  async removeMsg(msgId: number, user: any) {
+    const checkMsg: Msgs = await this.msgsRepo.findOneBy({ id: msgId });
+
+    if (!checkMsg) throw new NotFoundException();
+
+    if (checkMsg.senderId !== user.sub) throw new UnauthorizedException();
+
+    return this.msgsRepo.delete({ id: msgId });
   }
 }

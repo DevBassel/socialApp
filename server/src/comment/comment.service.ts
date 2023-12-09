@@ -37,13 +37,14 @@ export class CommentService {
       media: createCommentDto.media,
     });
 
-    const notification: Notification = this.NotifyRepo.create({
-      content: `${fromUser.name} has add comment in your post`,
-      from: fromUser,
-      toId: post.userId,
-    });
-
-    this.NotifyRepo.save(notification);
+    if (user.sub !== post.userId) {
+      const notification: Notification = this.NotifyRepo.create({
+        content: `${fromUser.name} has add comment in your post`,
+        from: fromUser,
+        toId: post.userId,
+      });
+      this.NotifyRepo.save(notification);
+    }
     return this.commentRepo.save(comment);
   }
 

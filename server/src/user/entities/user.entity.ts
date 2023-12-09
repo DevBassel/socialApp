@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+// import { Exclude } from 'class-transformer';
 import { Chat } from 'src/chat/entities/chat.entity';
 import { Msgs } from 'src/chat/entities/msg.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
@@ -60,8 +60,8 @@ export class User {
 }
 
 export class UserRes extends User {
-  @Exclude()
-  providerId: string;
+  // @Exclude()
+  // providerId: string;
 
   constructor(user: Partial<User>) {
     super();

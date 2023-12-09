@@ -16,11 +16,6 @@ export class UserService {
         where: {
           id: user.sub,
         },
-        relations: {
-          posts: true,
-          friends_1: true,
-          friends_2: true,
-        },
       }),
     );
   }
