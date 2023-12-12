@@ -11,20 +11,30 @@ import { getNotifications } from "../../store/notifications/notificationsActions
 import { useNavigate } from "react-router-dom";
 import Notifications from "../notifications/Notifications";
 import React from "react";
+import { reset } from "../../store/notifications/notificationsSlice";
+import Messages from "../messags/Messages";
+import { getChats } from "../../store/chats/chatActions";
 
 export default function NavItems() {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [openNotifications, setOpenNotifications] = React.useState(false);
+  const [openMessages, setOpenMessages] = React.useState(false);
+
+  const handleCloseMessages = () => {
+    dispatch(reset());
+    setOpenMessages(false);
+  };
 
   const handleCloseNotifications = () => {
+    dispatch(reset());
     setOpenNotifications(false);
   };
 
   const iconColor = "white";
   const navItems = [
     {
-      title: "Feeds",
+      title: "Home",
       color: "error",
       icone: <HomeRounded sx={{ color: iconColor }} />,
       handel: () => navigate("/"),
@@ -35,14 +45,17 @@ export default function NavItems() {
       color: "error",
       icone: <PeopleAlt sx={{ color: iconColor }} />,
       handel: () => navigate("/freiends"),
-      count: 10,
+      count: 0,
     },
     {
       title: "Messages",
       color: "error",
       icone: <MessageRounded sx={{ color: iconColor }} />,
-      handel: () => navigate("/messages"),
-      count: 10,
+      handel: () => {
+        dispatch(getChats());
+        setOpenMessages(true);
+      },
+      count: 0,
     },
     {
       title: "Notifications",
@@ -53,7 +66,7 @@ export default function NavItems() {
         dispatch(getNotifications());
         setOpenNotifications(true);
       },
-      count: 2,
+      count: 0,
     },
   ];
   return (
@@ -66,6 +79,7 @@ export default function NavItems() {
         </Tooltip>
       ))}
       <Notifications {...{ openNotifications, handleCloseNotifications }} />
+      <Messages {...{ openMessages, handleCloseMessages }} />
     </>
   );
 }

@@ -1,11 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./auth/authSlice";
 import notificationsSlice from "./notifications/notificationsSlice";
+import chatSlice from "./chats/chatSlice";
+import userSlice from "./user/userSlice";
+import postSlice from "./posts/postSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authSlice,
     notifications: notificationsSlice,
+    chats: chatSlice,
+    user: userSlice,
+    posts: postSlice,
   },
 });
 

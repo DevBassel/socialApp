@@ -23,6 +23,10 @@ export class ChatService {
   getChats(user: any) {
     return this.chatRepo.find({
       where: [{ recieverId: user.sub }, { senderId: user.sub }],
+      relations: {
+        sender: true,
+        reciever: true,
+      },
     });
   }
   async createChat(recieverId: number, user: any) {

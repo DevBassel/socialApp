@@ -26,8 +26,8 @@ export class PostController {
   }
 
   @Get()
-  findAll(@Req() req: Request) {
-    return this.postService.findAll(req.user);
+  findAll() {
+    return this.postService.findAll();
   }
 
   @Get(':id')

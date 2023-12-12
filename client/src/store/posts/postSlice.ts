@@ -1,51 +1,52 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { getNotifications } from "./notificationsActions";
+import { getPosts } from "./postActions";
 import { User } from "../auth/authSlice";
 
-export interface Notification {
-  id: number;
+export interface Post {
+  id?: number;
   content: string;
-  from: User;
-  toId: number;
+  media: string | null;
+  user: User;
   createdAt: string;
+  updatedAt?: string;
 }
+
 interface State {
-  notifications: Notification[];
+  posts: Post[];
   loading: boolean;
   error: unknown;
 }
 
 const initialState: State = {
-  notifications: [],
+  posts: [],
   loading: false,
   error: "",
 };
 
-const notificationsSlice = createSlice({
-  name: "notifications",
+const postSlice = createSlice({
+  name: "posts",
   initialState,
   reducers: {
-    reset: (state: State) => {
-      state.notifications = [];
+    resetPost: (state: State) => {
+      state.posts = [];
       state.loading = false;
       state.error = "";
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(getNotifications.pending, (state: State) => {
+      .addCase(getPosts.pending, (state: State) => {
         state.loading = true;
       })
       .addCase(
-        getNotifications.fulfilled,
-        (state: State, action: PayloadAction<Notification[]>) => {
+        getPosts.fulfilled,
+        (state: State, action: PayloadAction<Post[]>) => {
           state.loading = false;
-          state.notifications = action.payload;
-          state.error = "";
+          state.posts = action.payload;
         }
       )
       .addCase(
-        getNotifications.rejected,
+        getPosts.rejected,
         (state: State, action: PayloadAction<unknown>) => {
           state.loading = false;
           state.error = action.payload;
@@ -54,5 +55,4 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { reset } = notificationsSlice.actions;
-export default notificationsSlice.reducer;
+export default postSlice.reducer;

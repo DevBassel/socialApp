@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Req,
   UseGuards,
   UseInterceptors,
@@ -23,6 +24,10 @@ export class UserController {
     return this.userService.getMe(req.user);
   }
 
+  @Get(':userId')
+  getUser(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userService.findOne(userId);
+  }
   @Delete()
   removeUser(@Req() req: Request) {
     return this.userService.removeUser(req.user);

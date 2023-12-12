@@ -16,8 +16,10 @@ export class PostService {
     return this.postRepo.save(post);
   }
 
-  findAll(user: any) {
-    return this.postRepo.findBy({ userId: user.sub });
+  findAll() {
+    return this.postRepo.find({
+      relations: { user: true },
+    });
   }
 
   findOne(id: number) {

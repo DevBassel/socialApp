@@ -2,14 +2,20 @@ import {
   Avatar,
   Backdrop,
   Box,
+  Button,
   Container,
   Stack,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { Notification } from "../../store/notifications/notificationsSlice";
+import { Visibility } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+
 interface NProps {
   openNotifications: boolean;
   handleCloseNotifications(): void;
@@ -21,7 +27,10 @@ export default function Notifications({
   const { notifications } = useSelector(
     (state: RootState) => state.notifications
   );
-  const isMobile = useMediaQuery("(max-width: 899px)");
+  const navigate = useNavigate();
+
+  const isMobile = useMediaQuery("(max-width: 700px)");
+
   return (
     <div>
       <Backdrop
@@ -39,11 +48,14 @@ export default function Notifications({
             sx={{
               position: "fixed",
               cursor: "pointer",
-              top: 30,
-              right: 30,
-              fontSize: 60,
+              top: 10,
+              right: 10,
+              fontSize: 50,
             }}
           />
+          <Typography variant="h3" marginBottom={3}>
+            Notifications
+          </Typography>
           <Container
             maxWidth={"md"}
             sx={{
@@ -53,7 +65,7 @@ export default function Notifications({
               overflowY: "scroll",
             }}
           >
-            {notifications.map((item) => (
+            {notifications.map((item: Notification) => (
               <Box
                 key={item.id}
                 bgcolor={"#124"}
@@ -63,10 +75,43 @@ export default function Notifications({
                 alignItems={"center"}
                 marginBlock={1}
               >
-                <Avatar src={item.from.picture} />
-                <Typography variant="subtitle2" marginLeft={2}>
+                <Tooltip
+                  title={
+                    <Box
+                      display={"flex"}
+                      flexDirection={"column"}
+                      alignItems={"center"}
+                    >
+                      <Avatar src={item.from.picture} />
+                      <Typography>{item.from.name}</Typography>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        sx={{ fontSize: "10px" }}
+                        color="primary"
+                        onClick={() => {
+                          handleCloseNotifications();
+                          navigate(`profile/${item.from.id}`);
+                        }}
+                      >
+                        View
+                      </Button>
+                    </Box>
+                  }
+                >
+                  <Avatar src={item.from.picture} />
+                </Tooltip>
+                <Typography
+                  variant="subtitle2"
+                  flexGrow={1}
+                  textAlign={"left"}
+                  marginLeft={2}
+                >
                   {item.content}
                 </Typography>
+                <Tooltip title={"make seen"} sx={{ cursor: "pointer" }}>
+                  <Visibility />
+                </Tooltip>
               </Box>
             ))}
           </Container>
