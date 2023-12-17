@@ -54,17 +54,21 @@ export class FriendService {
   }
 
   async getMyFriends(user: any) {
-    const friends_1 = await this.friendRepo.findBy({
-      reciverId: user.sub,
-      status: Status.ACCEPT,
+    const friends = await this.friendRepo.find({
+      where: [
+        { reciverId: user.sub, status: Status.ACCEPT },
+        {
+          senderId: user.sub,
+          status: Status.ACCEPT,
+        },
+      ],
+      relations: {
+        sender: true,
+        reciver: true,
+      },
     });
 
-    const friends_2 = await this.friendRepo.findBy({
-      senderId: user.sub,
-      status: Status.ACCEPT,
-    });
-
-    return [...friends_1, ...friends_2];
+    return friends;
   }
 
   async accept(reqId: number, statusType: StatusType, user: any) {

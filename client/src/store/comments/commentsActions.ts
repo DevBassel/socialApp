@@ -1,22 +1,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API } from "../../utils/api";
 import { RootState } from "..";
+import { API } from "../../utils/api";
 import { handleAxiosError } from "../../utils/handelError";
 
-export const getNotifications = createAsyncThunk(
-  "notifications/get",
-  async (_, { getState, rejectWithValue }) => {
+export interface CommentProp {
+  postId: number;
+  content: string;
+}
+export const createComment = createAsyncThunk(
+  "comments/create",
+  async (data: CommentProp, { getState, rejectWithValue }) => {
     try {
       const state = getState() as RootState;
 
-      const respons = await axios.get(`${API}/notifications`, {
+      const response = await axios.post(`${API}/comments`, data, {
         headers: {
           Authorization: `Bearer ${state.auth.user?.access_token}`,
         },
       });
 
-      return respons.data;
+      return [response.data];
     } catch (error) {
       return rejectWithValue(handleAxiosError(error));
     }

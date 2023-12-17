@@ -31,8 +31,8 @@ export class CommentService {
     const fromUser: User = await this.userRepo.findOneBy({ id: user.sub });
 
     const comment: Comment = this.commentRepo.create({
-      post,
-      userId: user.sub,
+      postId: post.id,
+      user: fromUser,
       content: createCommentDto.content,
       media: createCommentDto.media,
     });

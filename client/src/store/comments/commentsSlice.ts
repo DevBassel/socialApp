@@ -1,58 +1,57 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { getNotifications } from "./notificationsActions";
 import { User } from "../auth/authSlice";
+import { createComment } from "./commentsActions";
 
-export interface Notification {
-  id: number;
+export interface Comment {
+  id?: 4;
   content: string;
-  from: User;
-  toId: number;
+  media?: null;
   createdAt: string;
+  updatedAt?: string;
+  user: User;
 }
 interface State {
-  notifications: Notification[];
+  comment: Comment[];
   loading: boolean;
   error: unknown;
 }
-
 const initialState: State = {
-  notifications: [],
+  comment: [],
   loading: false,
   error: "",
 };
-
-const notificationsSlice = createSlice({
-  name: "notifications",
+const commentsSlice = createSlice({
+  name: "comments",
   initialState,
   reducers: {
-    resetNotifications: (state: State) => {
-      state.notifications = [];
+    resetComment: (state: State) => {
+      state.comment = [];
       state.loading = false;
       state.error = "";
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(getNotifications.pending, (state: State) => {
+      .addCase(createComment.pending, (state: State) => {
         state.loading = true;
       })
       .addCase(
-        getNotifications.fulfilled,
-        (state: State, action: PayloadAction<Notification[]>) => {
+        createComment.fulfilled,
+        (state: State, action: PayloadAction<Comment[]>) => {
           state.loading = false;
-          state.notifications = action.payload;
+          state.comment = [...state.comment, ...action.payload];
           state.error = "";
         }
       )
       .addCase(
-        getNotifications.rejected,
+        createComment.rejected,
         (state: State, action: PayloadAction<unknown>) => {
           state.loading = false;
+          state.comment = [];
           state.error = action.payload;
         }
       );
   },
 });
-
-export const { resetNotifications } = notificationsSlice.actions;
-export default notificationsSlice.reducer;
+export const { resetComment } = commentsSlice.actions;
+export default commentsSlice.reducer;

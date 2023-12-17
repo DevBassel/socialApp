@@ -11,23 +11,33 @@ import { getNotifications } from "../../store/notifications/notificationsActions
 import { useNavigate } from "react-router-dom";
 import Notifications from "../notifications/Notifications";
 import React from "react";
-import { reset } from "../../store/notifications/notificationsSlice";
+import { resetNotifications } from "../../store/notifications/notificationsSlice";
 import Messages from "../messags/Messages";
 import { getChats } from "../../store/chats/chatActions";
+import { getFriends } from "../../store/friend/friendActions";
+import Friends from "../friends/Friends";
+import { resetChat } from "../../store/chats/chatSlice";
+import { resetFriends } from "../../store/friend/friendSlice";
 
 export default function NavItems() {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [openNotifications, setOpenNotifications] = React.useState(false);
   const [openMessages, setOpenMessages] = React.useState(false);
+  const [openFriends, setOpenFriends] = React.useState(false);
 
   const handleCloseMessages = () => {
-    dispatch(reset());
+    dispatch(resetChat());
     setOpenMessages(false);
   };
 
+  const handleCloseFriends = () => {
+    dispatch(resetFriends());
+    setOpenFriends(false);
+  };
+
   const handleCloseNotifications = () => {
-    dispatch(reset());
+    dispatch(resetNotifications());
     setOpenNotifications(false);
   };
 
@@ -44,7 +54,10 @@ export default function NavItems() {
       title: "Feriends",
       color: "error",
       icone: <PeopleAlt sx={{ color: iconColor }} />,
-      handel: () => navigate("/freiends"),
+      handel: () => {
+        dispatch(getFriends());
+        setOpenFriends(true);
+      },
       count: 0,
     },
     {
@@ -80,6 +93,7 @@ export default function NavItems() {
       ))}
       <Notifications {...{ openNotifications, handleCloseNotifications }} />
       <Messages {...{ openMessages, handleCloseMessages }} />
+      <Friends {...{ openFriends, handleCloseFriends }} />
     </>
   );
 }

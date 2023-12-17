@@ -1,20 +1,18 @@
 import {
   Avatar,
-  Backdrop,
   Box,
   Button,
   Container,
-  Stack,
   Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Notification } from "../../store/notifications/notificationsSlice";
 import { Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import BackdropComponent from "../common/BackdropComponent";
 
 interface NProps {
   openNotifications: boolean;
@@ -32,40 +30,22 @@ export default function Notifications({
   const isMobile = useMediaQuery("(max-width: 700px)");
 
   return (
-    <div>
-      <Backdrop
-        sx={{
-          color: "#fff",
-          backdropFilter: "blur(6px)",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-        open={openNotifications}
-      >
-        <Stack position={"relative"}>
-          <CloseIcon
-            onClick={handleCloseNotifications}
-            color="error"
-            sx={{
-              position: "fixed",
-              cursor: "pointer",
-              top: 10,
-              right: 10,
-              fontSize: 50,
-            }}
-          />
-          <Typography variant="h3" marginBottom={3}>
-            Notifications
-          </Typography>
-          <Container
-            maxWidth={"md"}
-            sx={{
-              height: isMobile ? "80vh" : "70vh",
-              width: isMobile ? "95vw" : "70vw",
-              borderRadius: "1rem",
-              overflowY: "scroll",
-            }}
-          >
-            {notifications.map((item: Notification) => (
+    <BackdropComponent
+      title="Notifications"
+      closeFun={handleCloseNotifications}
+      open={openNotifications}
+      containerEl={
+        <Container
+          maxWidth={"md"}
+          sx={{
+            height: isMobile ? "80vh" : "70vh",
+            width: isMobile ? "95vw" : "70vw",
+            borderRadius: "1rem",
+            overflowY: "scroll",
+          }}
+        >
+          {notifications &&
+            notifications.map((item: Notification) => (
               <Box
                 key={item.id}
                 bgcolor={"#124"}
@@ -114,9 +94,8 @@ export default function Notifications({
                 </Tooltip>
               </Box>
             ))}
-          </Container>
-        </Stack>
-      </Backdrop>
-    </div>
+        </Container>
+      }
+    />
   );
 }

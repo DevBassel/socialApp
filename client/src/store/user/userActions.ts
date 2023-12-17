@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API } from "../../utils/api";
 import { RootState } from "..";
+import { handleAxiosError } from "../../utils/handelError";
 
 export const getUser = createAsyncThunk(
   "user/get",
@@ -13,12 +14,7 @@ export const getUser = createAsyncThunk(
       });
       return respons.data;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.data) return rejectWithValue(error.response?.data);
-        else return rejectWithValue(error.message);
-      }
-      console.log(error);
-      return rejectWithValue("An unexpected error occurred");
+      return rejectWithValue(handleAxiosError(error));
     }
   }
 );

@@ -22,18 +22,27 @@ export class PostService {
     });
   }
 
-  findOne(id: number) {
-    return this.postRepo.findOneBy({ id: id });
+  async findOne(id: number) {
+    const post = await this.postRepo.find({
+      where: { id },
+      relations: {
+        user: true,
+        comments: { user: true },
+      },
+    });
+    if (!post) throw new NotFoundException();
+
+    return post;
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
-    const checkPost: Post = await this.findOne(id);
+    const checkPost = await this.findOne(id);
     if (!checkPost) throw new NotFoundException();
     return this.postRepo.save({ ...checkPost, ...updatePostDto });
   }
 
   async remove(id: number) {
-    const checkPost: Post = await this.findOne(id);
+    const checkPost = await this.findOne(id);
     if (!checkPost) throw new NotFoundException();
     return this.postRepo.delete({ id });
   }
