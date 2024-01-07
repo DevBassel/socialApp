@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -24,7 +25,7 @@ export class Friend {
   @Column()
   senderId: number;
 
-  @ManyToOne(() => User, (user) => user.friends_2)
+  @ManyToOne(() => User, (user) => user.friends_2, { onDelete: 'CASCADE' })
   reciver: User;
 
   @Column()
@@ -35,4 +36,16 @@ export class Friend {
 
   @CreateDateColumn()
   createdAt: Date;
+}
+
+export class FriendShipRespons {
+  @Exclude()
+  senderId: User;
+
+  @Exclude()
+  reciverId: User;
+
+  constructor(friend: Partial<Friend>) {
+    Object.assign(this, friend);
+  }
 }

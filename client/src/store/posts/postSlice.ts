@@ -1,30 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { getPost, getPosts } from "./postActions";
-import { User } from "../auth/authSlice";
-
-export interface Comment {
-  id?: 4;
-  content: string;
-  media?: null;
-  createdAt: string;
-  updatedAt?: string;
-  user: User;
-}
-export interface Post {
-  id?: number;
-  content: string;
-  media: string | null;
-  user: User;
-  createdAt: string;
-  updatedAt?: string;
-  comments: Comment[];
-}
-
-interface State {
-  posts: Post[];
-  loading: boolean;
-  error: unknown;
-}
+import { getPost, getPosts, lovePost } from "./postActions";
+import { Post, State } from "./post-interfaces";
 
 const initialState: State = {
   posts: [],
@@ -79,7 +55,17 @@ const postSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         }
-      );
+      )
+      .addCase(lovePost.pending, (state: State) => {
+        state.loading = true;
+      })
+      .addCase(lovePost.fulfilled, (state: State) => {
+        state.loading = false;
+      })
+      .addCase(lovePost.rejected, (state: State, actions) => {
+        state.loading = false;
+        state.error = actions.payload;
+      });
   },
 });
 export const { resetPosts } = postSlice.actions;

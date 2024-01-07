@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PostLove } from './postLove.entity';
 
 @Entity({ name: 'posts' })
 export class Post {
@@ -26,6 +27,9 @@ export class Post {
 
   @Column()
   userId: number;
+
+  @OneToMany(() => PostLove, (post) => post.post)
+  loves: PostLove[];
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment;

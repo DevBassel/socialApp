@@ -3,6 +3,7 @@ import { User } from "../auth/authSlice";
 import { getFriends } from "./friendActions";
 
 export interface Friend {
+  user: User;
   id: 34;
   status: string;
   createdAt: string;

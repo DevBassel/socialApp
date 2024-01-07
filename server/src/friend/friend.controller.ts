@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   Req,
   ParseEnumPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { FriendService } from './friend.service';
 import { JwtGuard } from 'src/auth/strategys/jwt.guard';
@@ -16,6 +18,7 @@ import { Request } from 'express';
 import { StatusType } from './dto/statusType.enum';
 
 @UseGuards(JwtGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('friend')
 export class FriendController {
   constructor(private readonly friendService: FriendService) {}

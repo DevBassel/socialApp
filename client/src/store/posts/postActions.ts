@@ -42,3 +42,23 @@ export const getPost = createAsyncThunk(
     }
   }
 );
+
+export const lovePost = createAsyncThunk(
+  "posts/love",
+  async (postId: number, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState;
+      const { data } = await axios.post(
+        `${API}/posts/love`,
+        { postId },
+        {
+          headers: { Authorization: `Bearer ${state.auth.user?.access_token}` },
+        }
+      );
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error));
+    }
+  }
+);

@@ -3,8 +3,8 @@ import { AppDispatch, RootState } from "../../store";
 import {
   Avatar,
   Box,
-  Container,
-  Stack,
+  Divider,
+  Grid,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -12,9 +12,12 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getUser } from "../../store/user/userActions";
 import { resetUser, setUser } from "../../store/user/userSlice";
+import Friends from "../../components/friends/Friends";
+import { getFriends } from "../../store/friend/friendActions";
 
 function Profile() {
   const { user } = useSelector((state: RootState) => state.auth);
+  const { friends } = useSelector((state: RootState) => state.friends);
   const userData = useSelector((state: RootState) => state.user.user);
   const { userId } = useParams();
   const dispatch: AppDispatch = useDispatch();
@@ -24,6 +27,7 @@ function Profile() {
     if (userId) {
       dispatch(getUser(+userId));
     } else {
+      dispatch(getFriends());
       if (user) dispatch(setUser(user));
     }
 
@@ -31,11 +35,18 @@ function Profile() {
       dispatch(resetUser());
     };
   }, [dispatch, user, userId]);
-
+  console.log(friends);
   return (
     user && (
-      <Container maxWidth={"md"} sx={{ p: "15px", mt: 5 }}>
-        <Stack
+      <Grid
+        container
+        maxWidth={"md"}
+        sx={{ p: "15px", mt: 5, marginInline: "auto" }}
+      >
+        <Grid
+          item
+          sm={8}
+          md={6}
           display={"flex"}
           width={"fit-content"}
           m={"auto"}
@@ -63,8 +74,28 @@ function Profile() {
               </Typography>
             </Typography>
           </Box>
-        </Stack>
-      </Container>
+        </Grid>
+
+        {!userId && (
+          <Grid
+            item
+            borderRadius={2}
+            boxShadow={"0 0 0 1px rgba(99, 99, 99, 0.2)"}
+            xs={12}
+            sm={4}
+            md={4}
+            padding={2}
+          >
+            <Typography variant="h6">My Friends</Typography>
+            <Divider />
+            {friends.map((friend) => (
+              <Box key={friend.id}>
+                <Friends friend={friend.user} />
+              </Box>
+            ))}
+          </Grid>
+        )}
+      </Grid>
     )
   );
 }

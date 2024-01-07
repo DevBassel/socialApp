@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { User } from "../auth/authSlice";
-import { createComment } from "./commentsActions";
+import { createComment, removeComment, updateComment } from "./commentsActions";
 
 export interface Comment {
   id?: 4;
@@ -12,11 +12,13 @@ export interface Comment {
 }
 interface State {
   comment: Comment[];
+  msg: string;
   loading: boolean;
   error: unknown;
 }
 const initialState: State = {
   comment: [],
+  msg: "",
   loading: false,
   error: "",
 };
@@ -27,11 +29,13 @@ const commentsSlice = createSlice({
     resetComment: (state: State) => {
       state.comment = [];
       state.loading = false;
+      state.msg = "";
       state.error = "";
     },
   },
   extraReducers(builder) {
     builder
+      // create
       .addCase(createComment.pending, (state: State) => {
         state.loading = true;
       })
@@ -48,6 +52,40 @@ const commentsSlice = createSlice({
         (state: State, action: PayloadAction<unknown>) => {
           state.loading = false;
           state.comment = [];
+          state.error = action.payload;
+        }
+      )
+      // update
+      .addCase(updateComment.pending, (state: State) => {
+        state.loading = true;
+      })
+      .addCase(updateComment.fulfilled, (state: State) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(
+        updateComment.rejected,
+        (state: State, action: PayloadAction<unknown>) => {
+          state.loading = false;
+          state.comment = [];
+          state.error = action.payload;
+        }
+      )
+      // remove
+      .addCase(removeComment.pending, (state: State) => {
+        state.loading = true;
+      })
+      .addCase(
+        removeComment.fulfilled,
+        (state: State, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.msg = action.payload;
+        }
+      )
+      .addCase(
+        removeComment.rejected,
+        (state: State, action: PayloadAction<unknown>) => {
+          state.loading = false;
           state.error = action.payload;
         }
       );

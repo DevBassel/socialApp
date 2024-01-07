@@ -24,7 +24,7 @@ export default function ViewPost() {
   const { postId } = useParams();
   const dispatch: AppDispatch = useDispatch();
   const { posts } = useSelector((state: RootState) => state.posts);
-  const { comment } = useSelector((state: RootState) => state.comment);
+  // const { comment } = useSelector((state: RootState) => state.comment);
   const [textValue, setTextValue] = useState("");
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function ViewPost() {
         {posts &&
           posts[0] &&
           posts[0].comments &&
-          [...posts[0].comments, ...comment].map((comment) => (
+          posts[0].comments.map((comment) => (
             <Box
               key={comment.id}
               boxShadow={"0 0 0 1px rgba(99, 99, 99, 0.2)"}

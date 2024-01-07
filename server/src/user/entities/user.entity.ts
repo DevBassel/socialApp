@@ -13,6 +13,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RoleType } from '../enums/Roule.enum';
+import { PostLove } from 'src/post/entities/postLove.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -28,16 +30,22 @@ export class User {
   @Column()
   picture: string;
 
+  @Column({ default: RoleType.User })
+  role: RoleType;
+
   @Column()
   providerId: string;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
-  @OneToMany(() => Friend, (friend) => friend.sender)
+  @OneToMany(() => PostLove, (postlove) => postlove.user)
+  loves: PostLove[];
+
+  @OneToMany(() => Friend, (friend) => friend.sender, { onDelete: 'CASCADE' })
   friends_1: Friend[];
 
-  @OneToMany(() => Friend, (friend) => friend.reciver)
+  @OneToMany(() => Friend, (friend) => friend.reciver, { onDelete: 'CASCADE' })
   friends_2: Friend[];
 
   @OneToMany(() => Notification, (notification) => notification.from)

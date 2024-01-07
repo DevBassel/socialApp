@@ -75,6 +75,8 @@ export class CommentService {
     });
 
     if (!comment) throw new NotFoundException();
-    return this.commentRepo.delete({ id });
+    const del = await this.commentRepo.delete({ id });
+
+    return del.affected && 'success';
   }
 }

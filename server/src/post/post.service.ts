@@ -4,11 +4,13 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PostLove } from './entities/postLove.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
+    @InjectRepository(PostLove) private readonly postLove: Repository<PostLove>,
   ) {}
 
   create(createPostDto: CreatePostDto, user: any) {
@@ -16,9 +18,25 @@ export class PostService {
     return this.postRepo.save(post);
   }
 
+  async lovePost(postId: number, user: any) {
+    const checkPostLove = await this.postLove.findOneBy({ postId });
+
+    if (checkPostLove) {
+      // remove love
+      this.postLove.delete({ postId });
+    } else {
+      // create love
+      this.postLove.save({
+        postId,
+        userId: user.sub,
+      });
+    }
+    return 'success';
+  }
+
   findAll() {
     return this.postRepo.find({
-      relations: { user: true },
+      relations: { user: true, loves: true },
     });
   }
 
@@ -28,6 +46,7 @@ export class PostService {
       relations: {
         user: true,
         comments: { user: true },
+        loves: true,
       },
     });
     if (!post) throw new NotFoundException();

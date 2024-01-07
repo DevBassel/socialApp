@@ -14,13 +14,13 @@ export class Chat {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.chats)
+  @ManyToOne(() => User, (user) => user.chats, { onDelete: 'CASCADE' })
   sender: User;
 
   @Column()
   senderId: number;
 
-  @ManyToOne(() => User, (user) => user.chats)
+  @ManyToOne(() => User, (user) => user.chats, { onDelete: 'CASCADE' })
   reciever: User;
 
   @Column()

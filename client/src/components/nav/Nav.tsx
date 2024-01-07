@@ -28,7 +28,11 @@ export default function ButtonAppBar() {
     user && (
       <AppBar
         position="sticky"
-        sx={{ boxShadow: " rgba(99, 99, 99, 0.2) 0px 2px 8px 0px", top: 0 }}
+        sx={{
+          bgcolor: "#1976d2",
+          boxShadow: " rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+          top: 0,
+        }}
       >
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>

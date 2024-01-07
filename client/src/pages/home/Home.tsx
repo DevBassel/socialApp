@@ -63,12 +63,11 @@ function Home() {
           <Divider sx={{ bgcolor: "gray", mb: 3 }} />
           {posts &&
             posts.map((post) => (
-              <Box key={post.id} marginBlock={ 3}>
+              <Box key={post.id} marginBlock={3}>
                 <Stack
                   bgcolor={"#101418"}
                   boxShadow={"0 0 0 1px rgba(99, 99, 99, 0.2)"}
                   borderRadius={2}
-                  p={0.5}
                 >
                   <Post {...post} />
                 </Stack>

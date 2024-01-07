@@ -10,9 +10,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Post as PostI } from "../../store/posts/postSlice";
+import { Post as PostI } from "../../store/posts/post-interfaces";
 import { useNavigate, useLocation } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import {
   DeleteRounded,
   EditRounded,
@@ -22,15 +22,32 @@ import {
   FavoriteBorder,
   ModeCommentTwoTone,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { lovePost } from "../../store/posts/postActions";
 
-export default function Post({ id, content, media, user, createdAt }: PostI) {
+export default function Post({
+  id,
+  content,
+  media,
+  user,
+  createdAt,
+  loves,
+}: PostI) {
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const checkUserLovePost = loves.find(
+    (item) => item.userId === currentUser?.id
+  );
+
+  const [love, setLove] = useState<boolean>(Boolean(checkUserLovePost));
+
   const currentPath = useLocation().pathname;
+  const dispatch: AppDispatch = useDispatch();
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -111,7 +128,14 @@ export default function Post({ id, content, media, user, createdAt }: PostI) {
       </Box>
       <Divider color={"gray"} />
       <Box display={"flex"} flexBasis={"auto"} textAlign={"center"}>
-        <IconButton sx={iconStyle} color="inherit">
+        <IconButton
+          sx={iconStyle}
+          color={love ? "error" : "inherit"}
+          onClick={() => {
+            setLove(!love);
+            dispatch(lovePost(id));
+          }}
+        >
           <FavoriteBorder fontSize="medium" />
         </IconButton>
         <IconButton

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Friend, Status } from './entities/friend.entity';
+import { Friend, FriendShipRespons, Status } from './entities/friend.entity';
 import { Repository } from 'typeorm';
 import { StatusType } from './dto/statusType.enum';
 import { Notification } from 'src/notification/entities/notification.entity';
@@ -68,7 +68,17 @@ export class FriendService {
       },
     });
 
-    return friends;
+    const myFriends = friends.map((friend) => {
+      const { sender, reciver, ...other } = friend;
+
+      if (sender.id === user.sub) {
+        return { ...other, user: reciver };
+      } else {
+        return { ...other, user: sender };
+      }
+    });
+
+    return myFriends.map((friend) => new FriendShipRespons(friend));
   }
 
   async accept(reqId: number, statusType: StatusType, user: any) {

@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   IconButton,
+  Input,
   Menu,
   MenuItem,
   Tooltip,
@@ -11,14 +12,28 @@ import {
 import { Comment as CommentI } from "../../store/posts/postSlice";
 import { MenuSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import {
+  removeComment,
+  updateComment,
+} from "../../store/comments/commentsActions";
+import Swal from "sweetalert2";
+import { resetComment } from "../../store/comments/commentsSlice";
 
-export default function Comment({ content, createdAt, user }: CommentI) {
+interface CommentProp extends CommentI {}
+
+export default function Comment({ content, id, createdAt, user }: CommentProp) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [disableEdit, setDisableEdit] = useState(true);
+  const [commentContent, setCommentContent] = useState(content);
+
+  const { msg, error } = useSelector((state: RootState) => state.comment);
+  const dispatch: AppDispatch = useDispatch();
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -26,6 +41,21 @@ export default function Comment({ content, createdAt, user }: CommentI) {
     setAnchorEl(null);
   };
   const cuurentUser = useSelector((state: RootState) => state.auth.user);
+
+  useEffect(() => {
+    if (msg) {
+      Swal.fire({
+        title: msg,
+        icon: "success",
+      }).then(() => dispatch(resetComment()));
+    }
+    if (error) {
+      Swal.fire({
+        title: error,
+        icon: "error",
+      }).then(() => dispatch(resetComment()));
+    }
+  }, [dispatch, error, msg]);
   return (
     <>
       <Box display={"flex"}>
@@ -54,16 +84,59 @@ export default function Comment({ content, createdAt, user }: CommentI) {
               </IconButton>
             </Tooltip>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-              <MenuItem>Edit</MenuItem>
-              <MenuItem>Remove</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setDisableEdit(false);
+                  handleClose();
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  id && dispatch(removeComment(+id));
+                  handleClose();
+                }}
+              >
+                Remove
+              </MenuItem>
             </Menu>
           </>
         ) : null}
       </Box>
       <Box ml={6}>
-        <Typography variant="subtitle2" color={"gray"}>
-          {content}
-        </Typography>
+        <Input
+          onChange={(e) => {
+            setCommentContent(e.target.value);
+          }}
+          value={commentContent}
+          disableUnderline={disableEdit}
+          disabled={disableEdit}
+        />
+        {!disableEdit && (
+          <>
+            <Button
+              onClick={() => {
+                setDisableEdit(true);
+                id &&
+                  commentContent &&
+                  dispatch(updateComment({ content: commentContent, id }));
+              }}
+              sx={{ ml: 2 }}
+              variant="outlined"
+            >
+              Edite
+            </Button>
+            <Button
+              onClick={() => setDisableEdit(true)}
+              sx={{ ml: 2 }}
+              variant="outlined"
+              color="error"
+            >
+              Cancel
+            </Button>
+          </>
+        )}
       </Box>
     </>
   );
