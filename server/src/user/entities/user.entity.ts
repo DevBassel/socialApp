@@ -15,6 +15,7 @@ import {
 } from 'typeorm';
 import { RoleType } from '../enums/Roule.enum';
 import { PostLove } from 'src/post/entities/postLove.entity';
+import { Favorite } from 'src/favorites/enteities/favorite.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -38,6 +39,9 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Favorite, (fav) => fav.user)
+  favorites: Favorite[];
 
   @OneToMany(() => PostLove, (postlove) => postlove.user)
   loves: PostLove[];

@@ -21,6 +21,9 @@ export class Notification {
   @Column()
   fromId: number;
 
+  @ManyToOne(() => User, (user) => user.notification, { onDelete: 'CASCADE' })
+  to: User;
+
   @Column({ nullable: true })
   toId: number;
 

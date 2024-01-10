@@ -33,6 +33,7 @@ export default function Post({
   user,
   createdAt,
   loves,
+  comments,
 }: PostI) {
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.auth.user);
@@ -137,6 +138,9 @@ export default function Post({
           }}
         >
           <FavoriteBorder fontSize="medium" />
+          <Typography ml={2} variant="subtitle1">
+            {comments && loves && loves.length}
+          </Typography>
         </IconButton>
         <IconButton
           onClick={() =>
@@ -146,6 +150,9 @@ export default function Post({
           color="inherit"
         >
           <ModeCommentTwoTone />
+          <Typography ml={2} variant="subtitle1">
+            {comments && comments.length}
+          </Typography>
         </IconButton>
       </Box>
     </>

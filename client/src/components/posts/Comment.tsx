@@ -9,7 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Comment as CommentI } from "../../store/posts/postSlice";
+import { Comment as CommentI } from "../../store/posts/post-interfaces";
 import { MenuSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";

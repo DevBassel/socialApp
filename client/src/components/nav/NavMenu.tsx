@@ -4,6 +4,7 @@ import { logout } from "../../store/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../store";
+import { googleLogout } from "@react-oauth/google";
 
 interface Item {
   name: string;
@@ -42,6 +43,7 @@ export default function NavMenu({ anchorEl, open, handleClose }: MenueProps) {
       icon: <Logout />,
       handel: () => {
         handleClose();
+        googleLogout();
         dispatch(logout());
         navigate("/");
       },

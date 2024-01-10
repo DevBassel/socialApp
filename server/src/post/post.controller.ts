@@ -18,15 +18,18 @@ import { JwtGuard } from 'src/auth/strategys/jwt.guard';
 import { RoleGuard } from 'src/auth/strategys/role.guard';
 import { Role } from 'src/decorators/role.decorator';
 import { RoleType } from 'src/user/enums/Roule.enum';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtGuard)
+@ApiTags('Posts')
+@ApiBearerAuth()
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
   @UseGuards(RoleGuard)
-  @Role([RoleType.Admin])
+  @Role([RoleType.Admin, RoleType.User])
   create(@Body() createPostDto: CreatePostDto, @Req() req: Request) {
     return this.postService.create(createPostDto, req.user);
   }

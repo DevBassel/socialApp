@@ -12,13 +12,15 @@ import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "../../store/posts/postActions";
 import Post from "./Post";
-import { Post as PostI, resetPosts } from "../../store/posts/postSlice";
+import { Post as PostI } from "../../store/posts/post-interfaces";
+
 import Comment from "./Comment";
 import {
   CommentProp,
   createComment,
 } from "../../store/comments/commentsActions";
 import { resetComment } from "../../store/comments/commentsSlice";
+import { resetPosts } from "../../store/posts/postSlice";
 
 export default function ViewPost() {
   const { postId } = useParams();

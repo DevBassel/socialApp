@@ -16,8 +16,12 @@ import { Request } from 'express';
 import { JwtGuard } from 'src/auth/strategys/jwt.guard';
 import { MsgDto } from './dtos/msg.dto';
 import { UpdateMsgDto } from './dtos/updateMsgDto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CreateChatDto } from './dtos/createChat.dto';
 
 @UseGuards(JwtGuard)
+@ApiBearerAuth()
+@ApiTags('Chat')
 @Controller('chats')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
@@ -31,12 +35,12 @@ export class ChatController {
 
   // create new chat
   @Post()
-  create(@Req() req: Request, @Body('reciverId') reciverId: string) {
-    return this.chatService.createChat(+reciverId, req.user);
+  create(@Req() req: Request, @Body() payload: CreateChatDto) {
+    return this.chatService.createChat(payload.reciverId, req.user);
   }
 
-  @Delete()
-  removeChat(@Body('chatId', ParseIntPipe) id: number) {
+  @Delete(':chatId')
+  removeChat(@Param('chatId', ParseIntPipe) id: number) {
     return this.chatService.removeChat(id);
   }
 
@@ -58,8 +62,8 @@ export class ChatController {
     return this.chatService.updateMsg(payload, req.user);
   }
 
-  @Delete('msgs')
-  removeMsg(@Body('msgId', ParseIntPipe) msgId: number, @Req() req: Request) {
+  @Delete('msgs/:msgId')
+  removeMsg(@Param('msgId', ParseIntPipe) msgId: number, @Req() req: Request) {
     return this.chatService.removeMsg(msgId, req.user);
   }
 }

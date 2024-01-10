@@ -5,12 +5,16 @@ import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostLove } from './entities/postLove.entity';
+import { NotificationService } from 'src/notification/notification.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
     @InjectRepository(PostLove) private readonly postLove: Repository<PostLove>,
+    private readonly notificationServices: NotificationService,
+    private readonly userService: UserService,
   ) {}
 
   create(createPostDto: CreatePostDto, user: any) {
@@ -19,13 +23,29 @@ export class PostService {
   }
 
   async lovePost(postId: number, user: any) {
-    const checkPostLove = await this.postLove.findOneBy({ postId });
+    const post = await this.postRepo.findOneBy({ id: postId });
+
+    if (!post) throw new NotFoundException('post not found');
+
+    const checkPostLove = await this.postLove.findOneBy({
+      postId,
+      userId: user.sub,
+    });
 
     if (checkPostLove) {
       // remove love
       this.postLove.delete({ postId });
     } else {
       // create love
+      if (post.userId !== user.sub) {
+        const from = await this.userService.findOne(user.sub);
+
+        this.notificationServices.create({
+          content: `${from.name} loved your post <3`,
+          fromId: user.sub,
+          toId: post.userId,
+        });
+      }
       this.postLove.save({
         postId,
         userId: user.sub,

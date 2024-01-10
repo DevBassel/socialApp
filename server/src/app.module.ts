@@ -8,6 +8,7 @@ import { FriendModule } from './friend/friend.module';
 import { NotificationModule } from './notification/notification.module';
 import { CommentModule } from './comment/comment.module';
 import { ChatModule } from './chat/chat.module';
+import { FavoriteModule } from './favorites/favorite.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ChatModule } from './chat/chat.module';
     AuthModule,
     UserModule,
     PostModule,
+    FavoriteModule,
     FriendModule,
     NotificationModule,
     CommentModule,

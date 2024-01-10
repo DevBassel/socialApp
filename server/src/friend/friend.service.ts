@@ -6,17 +6,17 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Friend, FriendShipRespons, Status } from './entities/friend.entity';
 import { Repository } from 'typeorm';
-import { StatusType } from './dto/statusType.enum';
-import { Notification } from 'src/notification/entities/notification.entity';
+import { ActionType } from './dto/ActionType.enum';
 import { User } from 'src/user/entities/user.entity';
+import { NotificationService } from 'src/notification/notification.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class FriendService {
   constructor(
     @InjectRepository(Friend) private readonly friendRepo: Repository<Friend>,
-    @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(Notification)
-    private readonly notifyRepo: Repository<Notification>,
+    private readonly notificationServices: NotificationService,
+    private readonly userService: UserService,
   ) {}
   async create(userId: number, user: any) {
     const friendShip: Friend = this.friendRepo.create({
@@ -34,15 +34,13 @@ export class FriendService {
     if (checkFriendShip || friendShip.senderId === friendShip.reciverId)
       throw new BadRequestException();
 
-    const fromUser: User = await this.userRepo.findOneBy({ id: user.sub });
+    const fromUser: User = await this.userService.findOne(user.sub);
 
-    const notification = this.notifyRepo.create({
+    this.notificationServices.create({
       content: `you have a new friend request from ${fromUser.name}?`,
-      from: fromUser,
+      fromId: user.sub,
       toId: userId,
     });
-
-    this.notifyRepo.save(notification);
 
     return this.friendRepo.save(friendShip);
   }
@@ -50,6 +48,20 @@ export class FriendService {
   findAll(user: any) {
     return this.friendRepo.find({
       where: [{ senderId: user.sub }],
+    });
+  }
+  getMyRequsets(user: any) {
+    return this.friendRepo.find({
+      where: [
+        {
+          reciverId: user.sub,
+          status: Status.PENDING,
+        },
+        {
+          senderId: user.sub,
+          status: Status.PENDING,
+        },
+      ],
     });
   }
 
@@ -81,12 +93,18 @@ export class FriendService {
     return myFriends.map((friend) => new FriendShipRespons(friend));
   }
 
-  async accept(reqId: number, statusType: StatusType, user: any) {
+  async action(reqId: number, actionType: ActionType, user: any) {
     const checkFriendShip = await this.friendRepo.findOne({
-      where: {
-        id: reqId,
-        reciverId: user.sub,
-      },
+      where: [
+        {
+          id: reqId,
+          reciverId: user.sub,
+        },
+        {
+          id: reqId,
+          senderId: user.sub,
+        },
+      ],
       relations: {
         reciver: true,
       },
@@ -97,17 +115,14 @@ export class FriendService {
       throw new BadRequestException();
 
     if (
-      statusType === StatusType.accept &&
+      actionType === ActionType.accept &&
       checkFriendShip.status === Status.PENDING
     ) {
-      const notification = this.notifyRepo.create({
+      this.notificationServices.create({
         content: `${checkFriendShip.reciver.name} accept your friend request ^_^`,
-        from: checkFriendShip.reciver,
+        fromId: checkFriendShip.reciver.id,
         toId: checkFriendShip.senderId,
       });
-      this.notifyRepo.save(notification);
-
-      console.log(notification);
 
       this.friendRepo.save({
         ...checkFriendShip,
@@ -119,7 +134,7 @@ export class FriendService {
     }
 
     if (
-      statusType === StatusType.reject &&
+      actionType === ActionType.reject &&
       checkFriendShip.status === Status.PENDING
     ) {
       return this.friendRepo.save({
@@ -129,7 +144,21 @@ export class FriendService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} friend`;
+  async remove(id: number, user: any) {
+    const checkFriendShip = await this.friendRepo.findOne({
+      where: [
+        {
+          senderId: id,
+          reciverId: user.sub,
+        },
+        {
+          senderId: user.sub,
+          reciverId: id,
+        },
+      ],
+    });
+    if (!checkFriendShip) throw new NotFoundException();
+
+    return this.friendRepo.delete({ id: checkFriendShip.id });
   }
 }

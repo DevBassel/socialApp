@@ -16,4 +16,20 @@ export class NotificationService {
       relations: { from: true },
     });
   }
+
+  create({
+    content,
+    fromId,
+    toId,
+  }: {
+    content: string;
+    fromId: number;
+    toId: number;
+  }) {
+    return this.notifyRepo.save({
+      content,
+      fromId,
+      toId,
+    });
+  }
 }

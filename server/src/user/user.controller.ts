@@ -12,7 +12,10 @@ import {
 import { UserService } from './user.service';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/strategys/jwt.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
+@ApiBearerAuth()
 @UseGuards(JwtGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
@@ -20,7 +23,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('me')
-  getMe(@Param('id') id: string, @Req() req: Request) {
+  getMe(@Req() req: Request) {
     return this.userService.getMe(req.user);
   }
 

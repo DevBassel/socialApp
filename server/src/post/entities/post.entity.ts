@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostLove } from './postLove.entity';
+import { Favorite } from 'src/favorites/enteities/favorite.entity';
 
 @Entity({ name: 'posts' })
 export class Post {
@@ -33,6 +34,9 @@ export class Post {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment;
+
+  @OneToMany(() => Favorite, (fav) => fav.post)
+  fav: Favorite;
 
   @CreateDateColumn()
   createdAt: Date;
