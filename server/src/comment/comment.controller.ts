@@ -16,6 +16,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/strategys/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
@@ -25,7 +26,10 @@ export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto, @Req() req: Request) {
+  create(
+    @Body() createCommentDto: CreateCommentDto,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     return this.commentService.create(createCommentDto, req.user);
   }
 
@@ -43,13 +47,16 @@ export class CommentController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCommentDto: UpdateCommentDto,
-    @Req() req: Request,
+    @Req() req: Request & { user: JwtPayload },
   ) {
     return this.commentService.update(+id, updateCommentDto, req.user);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     return this.commentService.remove(+id, req.user);
   }
 }

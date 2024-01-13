@@ -11,6 +11,7 @@ import { Msgs } from './entities/msg.entity';
 import { UserService } from 'src/user/user.service';
 import { MsgDto } from './dtos/msg.dto';
 import { UpdateMsgDto } from './dtos/updateMsgDto';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class ChatService {
@@ -20,7 +21,7 @@ export class ChatService {
     private readonly userService: UserService,
   ) {}
 
-  getChats(user: any) {
+  getChats(user: JwtPayload) {
     return this.chatRepo.find({
       where: [{ recieverId: user.sub }, { senderId: user.sub }],
       relations: {
@@ -29,7 +30,7 @@ export class ChatService {
       },
     });
   }
-  async createChat(recieverId: number, user: any) {
+  async createChat(recieverId: number, user: JwtPayload) {
     const checkChat = await this.chatRepo.findOne({
       where: [
         { recieverId, senderId: user.sub },
@@ -58,7 +59,7 @@ export class ChatService {
     return this.msgsRepo.findBy({ chatId });
   }
 
-  async sendMsg(msgDto: MsgDto, user: any) {
+  async sendMsg(msgDto: MsgDto, user: JwtPayload) {
     const checkReciver = await this.userService.findOne(msgDto.reciverId);
     const checkChat = await this.chatRepo.findOne({
       where: [
@@ -85,7 +86,7 @@ export class ChatService {
     return this.msgsRepo.save(msg);
   }
 
-  async updateMsg(updatedMsg: UpdateMsgDto, user: any) {
+  async updateMsg(updatedMsg: UpdateMsgDto, user: JwtPayload) {
     const checkMsg: Msgs = await this.msgsRepo.findOneBy({ id: updatedMsg.id });
 
     if (!checkMsg) throw new NotFoundException();
@@ -95,7 +96,7 @@ export class ChatService {
     return this.msgsRepo.save({ ...checkMsg, content: updatedMsg.content });
   }
 
-  async removeMsg(msgId: number, user: any) {
+  async removeMsg(msgId: number, user: JwtPayload) {
     const checkMsg: Msgs = await this.msgsRepo.findOneBy({ id: msgId });
 
     if (!checkMsg) throw new NotFoundException();

@@ -19,6 +19,7 @@ import { RoleGuard } from 'src/auth/strategys/role.guard';
 import { Role } from 'src/decorators/role.decorator';
 import { RoleType } from 'src/user/enums/Roule.enum';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @UseGuards(JwtGuard)
 @ApiTags('Posts')
@@ -30,7 +31,10 @@ export class PostController {
   @Post()
   @UseGuards(RoleGuard)
   @Role([RoleType.Admin, RoleType.User])
-  create(@Body() createPostDto: CreatePostDto, @Req() req: Request) {
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     return this.postService.create(createPostDto, req.user);
   }
 
@@ -45,7 +49,10 @@ export class PostController {
   }
 
   @Post('love')
-  lovePost(@Body('postId', ParseIntPipe) postId: number, @Req() req: Request) {
+  lovePost(
+    @Body('postId', ParseIntPipe) postId: number,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     return this.postService.lovePost(postId, req.user);
   }
 

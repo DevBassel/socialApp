@@ -18,6 +18,7 @@ import { MsgDto } from './dtos/msg.dto';
 import { UpdateMsgDto } from './dtos/updateMsgDto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateChatDto } from './dtos/createChat.dto';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
@@ -28,14 +29,17 @@ export class ChatController {
 
   // get user chats
   @Get()
-  chats(@Req() req: Request, @Ip() ip: any) {
+  chats(@Req() req: Request & { user: JwtPayload }, @Ip() ip: any) {
     console.log(ip);
     return this.chatService.getChats(req.user);
   }
 
   // create new chat
   @Post()
-  create(@Req() req: Request, @Body() payload: CreateChatDto) {
+  create(
+    @Req() req: Request & { user: JwtPayload },
+    @Body() payload: CreateChatDto,
+  ) {
     return this.chatService.createChat(payload.reciverId, req.user);
   }
 
@@ -52,18 +56,24 @@ export class ChatController {
 
   // send msg
   @Post('msgs')
-  sendMsg(@Req() req: Request, @Body() msgDto: MsgDto) {
+  sendMsg(@Req() req: Request & { user: JwtPayload }, @Body() msgDto: MsgDto) {
     return this.chatService.sendMsg(msgDto, req.user);
   }
 
   // update msg
   @Patch('msgs')
-  updateMsg(@Body() payload: UpdateMsgDto, @Req() req: Request) {
+  updateMsg(
+    @Body() payload: UpdateMsgDto,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     return this.chatService.updateMsg(payload, req.user);
   }
 
   @Delete('msgs/:msgId')
-  removeMsg(@Param('msgId', ParseIntPipe) msgId: number, @Req() req: Request) {
+  removeMsg(
+    @Param('msgId', ParseIntPipe) msgId: number,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     return this.chatService.removeMsg(msgId, req.user);
   }
 }

@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { Post } from 'src/post/entities/post.entity';
 import { Notification } from 'src/notification/entities/notification.entity';
 import { User } from 'src/user/entities/user.entity';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class CommentService {
@@ -19,7 +20,7 @@ export class CommentService {
     private readonly NotifyRepo: Repository<Notification>,
   ) {}
 
-  async create(createCommentDto: CreateCommentDto, user: any) {
+  async create(createCommentDto: CreateCommentDto, user: JwtPayload) {
     const post: Post = await this.postRepo.findOne({
       where: {
         id: +createCommentDto.postId,
@@ -56,7 +57,11 @@ export class CommentService {
     return this.commentRepo.findOneBy({ id });
   }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto, user: any) {
+  async update(
+    id: number,
+    updateCommentDto: UpdateCommentDto,
+    user: JwtPayload,
+  ) {
     console.log(user);
     const comment: Comment = await this.commentRepo.findOneBy({
       id,
@@ -68,7 +73,7 @@ export class CommentService {
     return this.commentRepo.save({ ...comment, ...updateCommentDto });
   }
 
-  async remove(id: number, user: any) {
+  async remove(id: number, user: JwtPayload) {
     const comment: Comment = await this.commentRepo.findOneBy({
       id,
       userId: user.sub,

@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Favorite, FavoriteResponse } from './enteities/favorite.entity';
 import { Repository } from 'typeorm';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class FavoriteService {
   constructor(
     @InjectRepository(Favorite) private readonly favRepo: Repository<Favorite>,
   ) {}
-  async addToFav(postId: number, user: any) {
+  async addToFav(postId: number, user: JwtPayload) {
     const check = await this.favRepo.findOneBy({ postId, userId: user.sub });
     if (check) {
       // remove from fav
@@ -27,7 +28,7 @@ export class FavoriteService {
     }
   }
 
-  async getFavoriets(user: any) {
+  async getFavoriets(user: JwtPayload) {
     const favs = await this.favRepo.find({
       where: {
         userId: user.sub,

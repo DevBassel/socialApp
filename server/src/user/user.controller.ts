@@ -13,6 +13,7 @@ import { UserService } from './user.service';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/strategys/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -23,7 +24,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('me')
-  getMe(@Req() req: Request) {
+  getMe(@Req() req: Request & { user: JwtPayload }) {
     return this.userService.getMe(req.user);
   }
 
@@ -32,7 +33,7 @@ export class UserController {
     return this.userService.findOne(userId);
   }
   @Delete()
-  removeUser(@Req() req: Request) {
+  removeUser(@Req() req: Request & { user: JwtPayload }) {
     return this.userService.removeUser(req.user);
   }
 }

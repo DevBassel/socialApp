@@ -10,6 +10,7 @@ import { ActionType } from './dto/ActionType.enum';
 import { User } from 'src/user/entities/user.entity';
 import { NotificationService } from 'src/notification/notification.service';
 import { UserService } from 'src/user/user.service';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class FriendService {
@@ -18,7 +19,7 @@ export class FriendService {
     private readonly notificationServices: NotificationService,
     private readonly userService: UserService,
   ) {}
-  async create(userId: number, user: any) {
+  async create(userId: number, user: JwtPayload) {
     const friendShip: Friend = this.friendRepo.create({
       senderId: user.sub,
       reciverId: userId,
@@ -45,12 +46,12 @@ export class FriendService {
     return this.friendRepo.save(friendShip);
   }
 
-  findAll(user: any) {
+  findAll(user: JwtPayload) {
     return this.friendRepo.find({
       where: [{ senderId: user.sub }],
     });
   }
-  getMyRequsets(user: any) {
+  getMyRequsets(user: JwtPayload) {
     return this.friendRepo.find({
       where: [
         {
@@ -65,7 +66,7 @@ export class FriendService {
     });
   }
 
-  async getMyFriends(user: any) {
+  async getMyFriends(user: JwtPayload) {
     const friends = await this.friendRepo.find({
       where: [
         { reciverId: user.sub, status: Status.ACCEPT },
@@ -93,7 +94,7 @@ export class FriendService {
     return myFriends.map((friend) => new FriendShipRespons(friend));
   }
 
-  async action(reqId: number, actionType: ActionType, user: any) {
+  async action(reqId: number, actionType: ActionType, user: JwtPayload) {
     const checkFriendShip = await this.friendRepo.findOne({
       where: [
         {
@@ -144,7 +145,7 @@ export class FriendService {
     }
   }
 
-  async remove(id: number, user: any) {
+  async remove(id: number, user: JwtPayload) {
     const checkFriendShip = await this.friendRepo.findOne({
       where: [
         {

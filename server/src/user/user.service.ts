@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRes } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class UserService {
@@ -9,7 +10,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
-  async getMe(user: any) {
+  async getMe(user: JwtPayload) {
     console.log(user);
     return new UserRes(
       await this.userRepo.findOne({

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 import { Repository } from 'typeorm';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class NotificationService {
@@ -10,7 +11,7 @@ export class NotificationService {
     private readonly notifyRepo: Repository<Notification>,
   ) {}
 
-  findAll(user: any) {
+  findAll(user: JwtPayload) {
     return this.notifyRepo.find({
       where: { toId: user.sub },
       relations: { from: true },

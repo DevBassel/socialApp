@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostLove } from './entities/postLove.entity';
 import { NotificationService } from 'src/notification/notification.service';
 import { UserService } from 'src/user/user.service';
+import { JwtPayload } from 'src/auth/dto/jwtPayload';
 
 @Injectable()
 export class PostService {
@@ -17,12 +18,12 @@ export class PostService {
     private readonly userService: UserService,
   ) {}
 
-  create(createPostDto: CreatePostDto, user: any) {
+  create(createPostDto: CreatePostDto, user: JwtPayload) {
     const post = this.postRepo.create({ ...createPostDto, userId: user.sub });
     return this.postRepo.save(post);
   }
 
-  async lovePost(postId: number, user: any) {
+  async lovePost(postId: number, user: JwtPayload) {
     const post = await this.postRepo.findOneBy({ id: postId });
 
     if (!post) throw new NotFoundException('post not found');
