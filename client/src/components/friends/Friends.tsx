@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { User } from "../../store/auth/authSlice";
+import { User } from "../../store/user/userSlice";
 
 export default function Friends({ friend }: { friend: User }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

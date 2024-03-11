@@ -13,12 +13,12 @@ import {
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Request } from 'express';
-import { JwtGuard } from 'src/auth/strategys/jwt.guard';
 import { MsgDto } from './dtos/msg.dto';
 import { UpdateMsgDto } from './dtos/updateMsgDto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateChatDto } from './dtos/createChat.dto';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
+import { JwtGuard } from 'src/auth/strategys/guards/jwt.guard';
 
 @UseGuards(JwtGuard)
 @ApiBearerAuth()

@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
-import { JwtGuard } from 'src/auth/strategys/jwt.guard';
+import { JwtGuard } from 'src/auth/strategys/guards/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @ApiTags('Users')
 @ApiBearerAuth()

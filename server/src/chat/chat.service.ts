@@ -8,10 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
 import { Msgs } from './entities/msg.entity';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import { MsgDto } from './dtos/msg.dto';
 import { UpdateMsgDto } from './dtos/updateMsgDto';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @Injectable()
 export class ChatService {

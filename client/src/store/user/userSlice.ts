@@ -1,14 +1,28 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { User } from "../auth/authSlice";
-import { getUser } from "./userActions";
+
+import { getMe } from "./userActions";
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  picture: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface State {
   user: User | null;
   loading: boolean;
   erorr: unknown;
 }
+
+const user: User = localStorage.getItem("user-info")
+  ? JSON.parse(String(localStorage.getItem("user-info")))
+  : null;
+
 const initialState: State = {
-  user: null,
+  user,
   loading: false,
   erorr: "",
 };
@@ -28,18 +42,18 @@ const userSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(getUser.pending, (state: State) => {
+      .addCase(getMe.pending, (state: State) => {
         state.loading = true;
       })
       .addCase(
-        getUser.fulfilled,
+        getMe.fulfilled,
         (state: State, action: PayloadAction<User>) => {
           state.loading = false;
           state.user = action.payload;
         }
       )
       .addCase(
-        getUser.rejected,
+        getMe.rejected,
         (state: State, action: PayloadAction<unknown>) => {
           state.loading = false;
           state.erorr = action.payload;

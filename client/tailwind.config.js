@@ -4,7 +4,6 @@ export default {
   theme: {
     extend: {},
   },
-  important: "#root",
   corePlugins: {
     preflight: false,
   },

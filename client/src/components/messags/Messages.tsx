@@ -1,7 +1,4 @@
-import { Container, Stack, Tooltip, useMediaQuery } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { Chat } from "./Chat";
+import { Container, useMediaQuery } from "@mui/material";
 import BackdropComponent from "../common/BackdropComponent";
 
 interface MProps {
@@ -13,7 +10,6 @@ export default function Messages({
   handleCloseMessages,
 }: MProps) {
   const isMobile = useMediaQuery("(max-width: 700px)");
-  const { chats } = useSelector((state: RootState) => state.chats);
 
   return (
     <BackdropComponent
@@ -34,22 +30,7 @@ export default function Messages({
             gap: 5,
             flexWrap: "wrap",
           }}
-        >
-          {chats &&
-            chats.map((chat) => (
-              <Tooltip key={chat.id} title={chat.createdAt}>
-                <Stack
-                  key={chat.id}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  sx={{ width: "fit-content", cursor: "pointer" }}
-                >
-                  <Chat {...chat} />
-                </Stack>
-              </Tooltip>
-            ))}
-        </Container>
+        ></Container>
       }
     />
   );

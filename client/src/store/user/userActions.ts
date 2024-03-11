@@ -4,15 +4,18 @@ import { API } from "../../utils/api";
 import { RootState } from "..";
 import { handleAxiosError } from "../../utils/handelError";
 
-export const getUser = createAsyncThunk(
-  "user/get",
-  async (id: number, { getState, rejectWithValue }) => {
+export const getMe = createAsyncThunk(
+  "user/getMe",
+  async (_, { getState, rejectWithValue }) => {
     try {
       const state = getState() as RootState;
-      const respons = await axios.get(`${API}/users/${id}`, {
-        headers: { Authorization: `Bearer ${state.auth.user?.access_token}` },
+      const { data } = await axios.get(`${API}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${state.auth.userData?.access_token}`,
+        },
       });
-      return respons.data;
+      localStorage.setItem("user-info", JSON.stringify(data));
+      return data;
     } catch (error) {
       return rejectWithValue(handleAxiosError(error));
     }

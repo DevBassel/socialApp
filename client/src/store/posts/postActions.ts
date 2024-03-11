@@ -10,7 +10,9 @@ export const getPosts = createAsyncThunk(
     const state = getState() as RootState;
     try {
       const response = await axios.get(`${API}/posts`, {
-        headers: { Authorization: `Bearer ${state.auth.user?.access_token}` },
+        headers: {
+          Authorization: `Bearer ${state.auth.userData?.access_token}`,
+        },
       });
 
       return response.data;
@@ -32,7 +34,7 @@ export const getPost = createAsyncThunk(
       const state = getState() as RootState;
       const response = await axios.get(`${API}/posts/${id}`, {
         headers: {
-          Authorization: `Bearer ${state.auth.user?.access_token}`,
+          Authorization: `Bearer ${state.auth.userData?.access_token}`,
         },
       });
 
@@ -52,7 +54,9 @@ export const lovePost = createAsyncThunk(
         `${API}/posts/love`,
         { postId },
         {
-          headers: { Authorization: `Bearer ${state.auth.user?.access_token}` },
+          headers: {
+            Authorization: `Bearer ${state.auth.userData?.access_token}`,
+          },
         }
       );
 

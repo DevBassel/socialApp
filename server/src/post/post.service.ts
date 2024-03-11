@@ -5,9 +5,9 @@ import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostLove } from './entities/postLove.entity';
-import { NotificationService } from 'src/notification/notification.service';
-import { UserService } from 'src/user/user.service';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { NotificationService } from '../notification/notification.service';
+import { UserService } from '../user/user.service';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @Injectable()
 export class PostService {

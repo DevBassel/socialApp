@@ -3,9 +3,9 @@ import { CommentService } from './comment.service';
 import { CommentController } from './comment.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
-import { Post } from 'src/post/entities/post.entity';
-import { Notification } from 'src/notification/entities/notification.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Post } from '../post/entities/post.entity';
+import { Notification } from '../notification/entities/notification.entity';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Comment, Post, Notification, User])],

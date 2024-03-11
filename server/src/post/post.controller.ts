@@ -14,12 +14,12 @@ import { Request } from 'express';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { JwtGuard } from 'src/auth/strategys/jwt.guard';
-import { RoleGuard } from 'src/auth/strategys/role.guard';
-import { Role } from 'src/decorators/role.decorator';
-import { RoleType } from 'src/user/enums/Roule.enum';
+import { JwtGuard } from 'src/auth/strategys/guards/jwt.guard';
+import { RoleGuard } from '../auth/strategys/guards/role.guard';
+import { Role } from '../decorators/role.decorator';
+import { RoleType } from '../user/enums/Roule.enum';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @UseGuards(JwtGuard)
 @ApiTags('Posts')

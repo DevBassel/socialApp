@@ -1,4 +1,4 @@
-import { User } from "../auth/authSlice";
+import { User } from "../user/userSlice";
 
 export interface Comment {
   id?: 4;

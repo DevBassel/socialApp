@@ -12,12 +12,12 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { FriendService } from './friend.service';
-import { JwtGuard } from 'src/auth/strategys/jwt.guard';
+import { JwtGuard } from 'src/auth/strategys/guards/jwt.guard';
 import { Request } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateFriendShip } from './dto/createFriendShip.dto';
 import { ActionDto } from './dto/action.dto';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @UseGuards(JwtGuard)
 @ApiTags('friends')

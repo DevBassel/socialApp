@@ -4,10 +4,10 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
-import { Post } from 'src/post/entities/post.entity';
-import { Notification } from 'src/notification/entities/notification.entity';
-import { User } from 'src/user/entities/user.entity';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { Post } from '../post/entities/post.entity';
+import { Notification } from '../notification/entities/notification.entity';
+import { User } from '../user/entities/user.entity';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @Injectable()
 export class CommentService {

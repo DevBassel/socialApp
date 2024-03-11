@@ -11,7 +11,8 @@ import NavItems from "./NavItems";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 
 export default function ButtonAppBar() {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { userData } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.user);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -25,7 +26,7 @@ export default function ButtonAppBar() {
   };
 
   return (
-    user && (
+    userData?.access_token && (
       <AppBar
         position="sticky"
         sx={{
@@ -48,7 +49,7 @@ export default function ButtonAppBar() {
             <NavItems />
             <Tooltip title="Account settings">
               <IconButton onClick={handleClick} size="small">
-                <Avatar src={user.picture} />
+                <Avatar src={user?.picture} />
               </IconButton>
             </Tooltip>
           </Box>

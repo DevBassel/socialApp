@@ -1,10 +1,6 @@
-import { Avatar, Box, BoxProps, Typography } from "@mui/material";
-import { Chat as ChatI } from "../../store/chats/chatSlice";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { Box, BoxProps, Typography } from "@mui/material";
 
-export function Chat({ sender, reciever }: ChatI) {
-  const { user } = useSelector((state: RootState) => state.auth);
+export function Chat() {
   const dotStyle: BoxProps = {
     position: "absolute",
     bottom: 0,
@@ -14,15 +10,15 @@ export function Chat({ sender, reciever }: ChatI) {
     width: "10px",
     borderRadius: "50%",
   };
-  const friend = sender.id === user?.id ? reciever : sender;
+  // const friend = sender.id === user?.id ? reciever : sender;
   return (
     <>
       <Box position={"relative"}>
-        <Avatar src={friend.picture} sx={{ width: 70, height: 70 }} />
+        {/* <Avatar src={friend.picture} sx={{ width: 70, height: 70 }} /> */}
         <Box {...dotStyle}></Box>
       </Box>
       <Typography variant="subtitle1" mt={1}>
-        {friend.name}
+        {/* {friend.name} */}
       </Typography>
     </>
   );

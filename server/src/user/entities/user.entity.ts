@@ -1,10 +1,10 @@
 // import { Exclude } from 'class-transformer';
-import { Chat } from 'src/chat/entities/chat.entity';
-import { Msgs } from 'src/chat/entities/msg.entity';
-import { Comment } from 'src/comment/entities/comment.entity';
-import { Friend } from 'src/friend/entities/friend.entity';
-import { Notification } from 'src/notification/entities/notification.entity';
-import { Post } from 'src/post/entities/post.entity';
+import { Chat } from '../../chat/entities/chat.entity';
+import { Msgs } from '../../chat/entities/msg.entity';
+import { Comment } from '../../comment/entities/comment.entity';
+import { Friend } from '../../friend/entities/friend.entity';
+import { Notification } from '../../notification/entities/notification.entity';
+import { Post } from '../../post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
@@ -14,8 +14,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { RoleType } from '../enums/Roule.enum';
-import { PostLove } from 'src/post/entities/postLove.entity';
-import { Favorite } from 'src/favorites/enteities/favorite.entity';
+import { PostLove } from '../../post/entities/postLove.entity';
+import { Favorite } from '../../favorites/enteities/favorite.entity';
+import { ProviderType } from '../enums/ProviderType.enum';
 
 @Entity({ name: 'users' })
 export class User {
@@ -35,7 +36,7 @@ export class User {
   role: RoleType;
 
   @Column()
-  providerId: string;
+  provider: ProviderType;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

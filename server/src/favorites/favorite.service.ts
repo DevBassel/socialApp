@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Favorite, FavoriteResponse } from './enteities/favorite.entity';
 import { Repository } from 'typeorm';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @Injectable()
 export class FavoriteService {

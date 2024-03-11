@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { Request } from 'express';
-import { JwtGuard } from 'src/auth/strategys/jwt.guard';
+import { JwtGuard } from 'src/auth/strategys/guards/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AddToFav } from './dto/addToFav.dto';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @UseGuards(JwtGuard)
 @UseInterceptors(ClassSerializerInterceptor)

@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ConfigService } from '@nestjs/config';
-import { OAuth2Client } from 'google-auth-library';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
+import { ProviderType } from 'src/user/enums/ProviderType.enum';
 
 @Injectable()
 export class AuthService {
@@ -16,35 +16,51 @@ export class AuthService {
   ) {}
 
   async googleLogin(createAuthDto: CreateAuthDto) {
-    const client = new OAuth2Client({
-      clientId: this.config.getOrThrow('client_Id'),
-      clientSecret: this.config.getOrThrow('clientSecret'),
-    });
+    try {
+      const userData = await (
+        await fetch('https://www.googleapis.com/userinfo/v2/me', {
+          headers: {
+            Authorization: `Bearer ${createAuthDto.access_token}`,
+          },
+        })
+      ).json();
+      console.log('google', userData);
 
-    const data = await client.verifyIdToken({
-      idToken: createAuthDto.access_token,
-      audience: this.config.getOrThrow('client_Id'),
-    });
+      const checkUser = await this.userRepo.findOneBy({
+        email: userData.email,
+        provider: ProviderType.GOOGLE,
+      });
 
-    const { email, picture, name, sub } = data.getPayload();
-    const checkUser = await this.userRepo.findOneBy({ providerId: sub });
-
-    if (checkUser)
-      return {
-        ...checkUser,
-        access_token: this.jwt.sign({ sub: checkUser.id, email }),
-      };
-
-    console.log('creating user...');
-    const user = this.userRepo.create({
-      providerId: sub,
-      name,
-      email,
-      picture,
-    });
-
-    this.userRepo.save(user);
-
-    return { ...user, access_token: this.jwt.sign({ sub, email }) };
+      if (checkUser)
+        return {
+          access_token: this.jwt.sign(
+            { sub: checkUser.id, name: checkUser.name, email: checkUser.email },
+            {
+              expiresIn: '7d',
+            } as JwtSignOptions,
+          ),
+        };
+      else {
+        // create user
+        console.log('create user');
+        const newUser = await this.userRepo.save({
+          email: userData.email,
+          name: userData.name,
+          picture: userData.picture,
+          provider: ProviderType.GOOGLE,
+        });
+        return {
+          access_token: this.jwt.sign(
+            { sub: newUser.id, name: newUser.name, email: newUser.email },
+            {
+              expiresIn: '7d',
+            } as JwtSignOptions,
+          ),
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException();
+    }
   }
 }

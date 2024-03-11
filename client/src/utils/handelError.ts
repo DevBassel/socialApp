@@ -8,6 +8,5 @@ export const handleAxiosError = (error: unknown): string => {
       return error.message;
     }
   }
-
   return "An unexpected error occurred";
 };

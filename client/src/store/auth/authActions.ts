@@ -3,11 +3,11 @@ import axios from "axios";
 import { API } from "../../utils/api";
 import { handleAxiosError } from "../../utils/handelError";
 
-export const LoginAction = createAsyncThunk(
-  "auth/login",
+export const LoginGoogle = createAsyncThunk(
+  "auth/google",
   async (credential: string, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API}/auth/google/login`, {
+      const response = await axios.post(`${API}/auth/google`, {
         access_token: credential,
       });
       localStorage.setItem("user_data", JSON.stringify(response.data));
@@ -18,4 +18,7 @@ export const LoginAction = createAsyncThunk(
   }
 );
 
-export const LogoutAction = () => localStorage.removeItem("user_data");
+export const LogoutAction = () => {
+  localStorage.removeItem("user_data");
+  localStorage.removeItem("user-info");
+};

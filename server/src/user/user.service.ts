@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRes } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @Injectable()
 export class UserService {
@@ -17,6 +17,15 @@ export class UserService {
         where: {
           id: user.sub,
         },
+        select: [
+          'id',
+          'name',
+          'email',
+          'picture',
+          'role',
+          'updatedAt',
+          'createdAt',
+        ],
       }),
     );
   }

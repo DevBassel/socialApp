@@ -4,8 +4,8 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { JwtStrategy } from './strategys/jwt.strategy';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { JwtStrategy } from './strategys/jwt.strategy';
         secret: config.getOrThrow('JWT_KEY'),
         global: true,
         signOptions: {
-          expiresIn: 3_600_000 * 24,
+          expiresIn: '7d',
         },
       }),
       inject: [ConfigService],

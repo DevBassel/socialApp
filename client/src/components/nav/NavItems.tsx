@@ -4,30 +4,21 @@ import {
   NotificationsActiveRounded,
 } from "@mui/icons-material";
 import { Badge, IconButton, Tooltip } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { getNotifications } from "../../store/notifications/notificationsActions";
 import { useNavigate } from "react-router-dom";
 import Notifications from "../notifications/Notifications";
 import React from "react";
-import { resetNotifications } from "../../store/notifications/notificationsSlice";
 import Messages from "../messags/Messages";
-import { getChats } from "../../store/chats/chatActions";
-import { resetChat } from "../../store/chats/chatSlice";
 
 export default function NavItems() {
-  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [openNotifications, setOpenNotifications] = React.useState(false);
   const [openMessages, setOpenMessages] = React.useState(false);
 
   const handleCloseMessages = () => {
-    dispatch(resetChat());
     setOpenMessages(false);
   };
 
   const handleCloseNotifications = () => {
-    dispatch(resetNotifications());
     setOpenNotifications(false);
   };
 
@@ -46,7 +37,6 @@ export default function NavItems() {
       color: "error",
       icone: <MessageRounded sx={{ color: iconColor }} />,
       handel: () => {
-        dispatch(getChats());
         setOpenMessages(true);
       },
       count: 0,
@@ -57,7 +47,6 @@ export default function NavItems() {
       icone: <NotificationsActiveRounded sx={{ color: iconColor }} />,
       link: "/notifications",
       handel: () => {
-        dispatch(getNotifications());
         setOpenNotifications(true);
       },
       count: 0,

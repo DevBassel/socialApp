@@ -14,9 +14,9 @@ import { ApiTags } from '@nestjs/swagger';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('google/login')
+  @Post('google')
   @UseInterceptors(ClassSerializerInterceptor)
-  login(@Body() createAuthDto: CreateAuthDto) {
+  GoogleLogin(@Body() createAuthDto: CreateAuthDto) {
     console.log('test');
     return this.authService.googleLogin(createAuthDto);
   }

@@ -1,5 +1,5 @@
-import { Comment } from 'src/comment/entities/comment.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Comment } from '../../comment/entities/comment.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostLove } from './postLove.entity';
-import { Favorite } from 'src/favorites/enteities/favorite.entity';
+import { Favorite } from '../../favorites/enteities/favorite.entity';
 
 @Entity({ name: 'posts' })
 export class Post {

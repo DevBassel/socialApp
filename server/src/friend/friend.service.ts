@@ -7,10 +7,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Friend, FriendShipRespons, Status } from './entities/friend.entity';
 import { Repository } from 'typeorm';
 import { ActionType } from './dto/ActionType.enum';
-import { User } from 'src/user/entities/user.entity';
-import { NotificationService } from 'src/notification/notification.service';
-import { UserService } from 'src/user/user.service';
-import { JwtPayload } from 'src/auth/dto/jwtPayload';
+import { User } from '../user/entities/user.entity';
+import { NotificationService } from '../notification/notification.service';
+import { UserService } from '../user/user.service';
+import { JwtPayload } from '../auth/dto/jwtPayload';
 
 @Injectable()
 export class FriendService {

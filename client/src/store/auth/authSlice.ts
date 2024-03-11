@@ -1,31 +1,26 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { LoginAction, LogoutAction } from "./authActions";
+import { LoginGoogle, LogoutAction } from "./authActions";
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  picture: string;
-  providerId: string;
-  createdAt: string;
-  updatedAt: string;
+export interface Auth {
   access_token: string;
 }
 
 interface State {
-  user: User | null;
+  access_token: null;
+  userData: Auth | null;
   error: unknown;
   loading: boolean;
 }
 
-const user: User = localStorage.getItem("user_data")
+const auth: Auth = localStorage.getItem("user_data")
   ? JSON.parse(String(localStorage.getItem("user_data")))
   : null;
 
 const initialState: State = {
-  user: user,
+  userData: auth,
   error: "",
   loading: false,
+  access_token: null,
 };
 
 const authSlice = createSlice({
@@ -34,23 +29,23 @@ const authSlice = createSlice({
   reducers: {
     logout: (state: State) => {
       state.error = "";
-      state.user = null;
+      state.userData = null;
       state.loading = false;
       LogoutAction();
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(LoginAction.pending, (state) => {
+      .addCase(LoginGoogle.pending, (state) => {
         state.loading = true;
       })
-      .addCase(LoginAction.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(LoginGoogle.fulfilled, (state, action: PayloadAction<Auth>) => {
         state.loading = false;
-        state.user = action.payload;
+        state.userData = action.payload;
         state.error = "";
       })
       .addCase(
-        LoginAction.rejected,
+        LoginGoogle.rejected,
         (state, action: PayloadAction<unknown>) => {
           console.log(action);
           state.loading = false;

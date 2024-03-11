@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
-import { Post } from 'src/post/entities/post.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Post } from '../../post/entities/post.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -14,13 +14,13 @@ export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Post, (post) => post.fav)
+  @ManyToOne(() => Post, (post) => post.fav, { onDelete: 'CASCADE' })
   post: Post;
 
   @Column()
   postId: number;
 
-  @ManyToOne(() => User, (user) => user.favorites)
+  @ManyToOne(() => User, (user) => user.favorites, { onDelete: 'CASCADE' })
   user: User;
 
   @Column()

@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Chat } from './chat.entity';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity({ name: 'messags' })
 export class Msgs {

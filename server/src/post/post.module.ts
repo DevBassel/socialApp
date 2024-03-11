@@ -3,11 +3,11 @@ import { PostService } from './post.service';
 import { PostController } from './post.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/entities/user.entity';
+import { UserService } from '../user/user.service';
+import { User } from '../user/entities/user.entity';
 import { PostLove } from './entities/postLove.entity';
-import { NotificationService } from 'src/notification/notification.service';
-import { Notification } from 'src/notification/entities/notification.entity';
+import { NotificationService } from '../notification/notification.service';
+import { Notification } from '../notification/entities/notification.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Post, User, PostLove, Notification])],
