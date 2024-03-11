@@ -20,6 +20,7 @@
     "@uiw/react-md-editor": "^4.0.3",
     "axios": "^1.6.2",
     "browser-image-compression": "^2.0.2",
+    "langdetect": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.2",
@@ -27,6 +28,7 @@
     "sweetalert2": "^11.10.1"
   },
   "devDependencies": {
+    "@types/langdetect": "^0.2.2",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",

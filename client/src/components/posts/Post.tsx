@@ -22,9 +22,12 @@ import {
   FavoriteBorder,
   ModeCommentTwoTone,
 } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import { lovePost } from "../../store/posts/postActions";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import MDEditor from "@uiw/react-md-editor";
+import { isRTL } from "../../utils/IsRtl";
+import axios from "axios";
+import { API } from "../../utils/api";
 
 export default function Post({
   id,
@@ -36,7 +39,8 @@ export default function Post({
   comments,
 }: PostI) {
   const navigate = useNavigate();
-  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const currentUser = useSelector((state: RootState) => state.user.user);
+  const { userData } = useSelector((state: RootState) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -44,10 +48,15 @@ export default function Post({
     (item) => item.userId === currentUser?.id
   );
 
-  const [love, setLove] = useState<boolean>(Boolean(checkUserLovePost));
+  const [love, setLove] = useState<{
+    active: boolean;
+    count: number;
+  }>({
+    active: Boolean(checkUserLovePost),
+    count: loves.length,
+  });
 
   const currentPath = useLocation().pathname;
-  const dispatch: AppDispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -56,7 +65,7 @@ export default function Post({
     setAnchorEl(null);
   };
   const iconStyle: SxProps = { flexGrow: 1, borderRadius: 0 };
-
+  console.log(user.picture);
   return (
     <>
       <Box p={2} borderRadius={2}>
@@ -90,7 +99,12 @@ export default function Post({
             </IconButton>
           </Tooltip>
         </Box>
-        <Typography>{content}</Typography>
+        <MDEditor.Markdown
+          className={`${
+            isRTL(content) ? "text-right" : "text-left"
+          } p-4 rounded-lg`}
+          source={content}
+        />
         <Typography>{media ? media : ""}</Typography>
         <Menu
           id="basic-menu"
@@ -131,15 +145,32 @@ export default function Post({
       <Box display={"flex"} flexBasis={"auto"} textAlign={"center"}>
         <IconButton
           sx={iconStyle}
-          color={love ? "error" : "inherit"}
-          onClick={() => {
-            setLove(!love);
-            dispatch(lovePost(id));
+          color={love.active ? "error" : "inherit"}
+          onClick={async () => {
+            try {
+              const { data } = await axios.post(
+                `${API}/posts/love`,
+                { postId: id },
+                {
+                  headers: {
+                    Authorization: `Bearer ${userData?.access_token}`,
+                  },
+                }
+              );
+              if (data) {
+                setLove({
+                  active: !love.active,
+                  count: love.active ? love.count - 1 : love.count + 1,
+                });
+              }
+            } catch (error) {
+              console.log(error);
+            }
           }}
         >
           <FavoriteBorder fontSize="medium" />
           <Typography ml={2} variant="subtitle1">
-            {comments && loves && loves.length}
+            {comments && loves && loves.length} {love.count}
           </Typography>
         </IconButton>
         <IconButton

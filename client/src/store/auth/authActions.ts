@@ -7,11 +7,11 @@ export const LoginGoogle = createAsyncThunk(
   "auth/google",
   async (credential: string, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API}/auth/google`, {
+      const { data } = await axios.post(`${API}/auth/google`, {
         access_token: credential,
       });
-      localStorage.setItem("user_data", JSON.stringify(response.data));
-      return response.data;
+      localStorage.setItem("user_data", JSON.stringify(data));
+      return data;
     } catch (error) {
       return rejectWithValue(handleAxiosError(error));
     }

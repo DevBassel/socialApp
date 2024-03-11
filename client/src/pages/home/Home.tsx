@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Grid,
   GridProps,
@@ -14,17 +15,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMe } from "../../store/user/userActions";
 import AddPostModel from "../../components/posts/addPostModel";
+import axios from "axios";
+import { API } from "../../utils/api";
+import { Post as PostI } from "../../store/posts/post-interfaces";
+import Post from "../../components/posts/Post";
 
 function Home() {
   const isMobile = useMediaQuery("(max-width: 700px)");
   const { userData } = useSelector((state: RootState) => state.auth);
-  // const { user } = useSelector((state: RootState) => state.user);
+  const [posts, setPosts] = useState<PostI[]>([]);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [openAddPost, setOpenAddPost] = useState(false);
   const handleOpenAddPost = () => setOpenAddPost(true);
   const handleCloseAddPost = () => setOpenAddPost(false);
-
+  const pageNum = 1;
   const gridStyle: GridProps = {
     padding: 2,
     borderRadius: 2,
@@ -38,6 +43,18 @@ function Home() {
     }
   }, [dispatch, navigate, userData?.access_token]);
 
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(`${API}/posts?page=${pageNum}`, {
+        headers: {
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+      });
+      if (data) {
+        setPosts(data);
+      }
+    })();
+  }, [userData?.access_token]);
   return (
     userData?.access_token && (
       <Grid
@@ -75,18 +92,18 @@ function Home() {
             News <FeedRounded fontSize="small" />
           </Typography>
           <Divider sx={{ bgcolor: "gray", mb: 3 }} />
-          {/* {posts &&
-          posts.map((post) => (
-            <Box key={post.id} marginBlock={3}>
-              <Stack
-                bgcolor={"#101418"}
-                boxShadow={"0 0 0 1px rgba(99, 99, 99, 0.2)"}
-                borderRadius={2}
-              >
-                <Post {...post} />
-              </Stack>
-            </Box>
-          ))} */}
+          {posts &&
+            posts.map((post) => (
+              <Box key={post.id} marginBlock={3}>
+                <Stack
+                  bgcolor={"#101418"}
+                  boxShadow={"0 0 0 1px rgba(99, 99, 99, 0.2)"}
+                  borderRadius={2}
+                >
+                  <Post {...post} />
+                </Stack>
+              </Box>
+            ))}
         </Grid>
       </Grid>
     )

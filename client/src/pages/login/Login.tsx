@@ -2,8 +2,6 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { API } from "../../utils/api";
 import { LoginGoogle } from "../../store/auth/authActions";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,11 +15,7 @@ function Login() {
   const googlelogin = useGoogleLogin({
     // will send to backend
     onSuccess: async (codeResponse) => {
-      const { data } = await axios.post(`${API}/auth/google`, {
-        access_token: codeResponse.access_token,
-      });
-      console.log(data);
-      dispatch(LoginGoogle(data.access_token));
+      dispatch(LoginGoogle(codeResponse.access_token));
     },
     flow: "implicit",
   });

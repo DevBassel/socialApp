@@ -9,4 +9,7 @@ export class CreatePostDto {
 
   @IsOptional()
   media?: string;
+
+  @IsString()
+  lang: string;
 }

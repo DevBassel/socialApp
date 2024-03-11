@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PostService } from './post.service';
@@ -39,8 +40,9 @@ export class PostController {
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  findAll(@Query('page', ParseIntPipe) page: number) {
+    console.log(page);
+    return this.postService.findAll(page);
   }
 
   @Get(':id')

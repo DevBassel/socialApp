@@ -24,43 +24,42 @@ export class AuthService {
           },
         })
       ).json();
-      console.log('google', userData);
 
       const checkUser = await this.userRepo.findOneBy({
         email: userData.email,
-        provider: ProviderType.GOOGLE,
       });
 
-      if (checkUser)
-        return {
-          access_token: this.jwt.sign(
-            { sub: checkUser.id, name: checkUser.name, email: checkUser.email },
-            {
-              expiresIn: '7d',
-            } as JwtSignOptions,
-          ),
-        };
+      console.log('checkUser', checkUser);
+
+      if (checkUser) return this.createToken(checkUser);
       else {
-        // create user
-        console.log('create user');
+        console.log('create new user');
         const newUser = await this.userRepo.save({
-          email: userData.email,
           name: userData.name,
+          email: userData.email,
           picture: userData.picture,
           provider: ProviderType.GOOGLE,
         });
-        return {
-          access_token: this.jwt.sign(
-            { sub: newUser.id, name: newUser.name, email: newUser.email },
-            {
-              expiresIn: '7d',
-            } as JwtSignOptions,
-          ),
-        };
+        return this.createToken(newUser);
       }
     } catch (error) {
       console.log(error);
       throw new BadRequestException();
     }
+  }
+
+  createToken(user: User) {
+    return {
+      access_token: this.jwt.sign(
+        {
+          sub: user.id,
+          email: user.email,
+          name: user.name,
+        },
+        {
+          expiresIn: '7d',
+        } as JwtSignOptions,
+      ),
+    };
   }
 }

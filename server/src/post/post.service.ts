@@ -25,7 +25,7 @@ export class PostService {
 
   async lovePost(postId: number, user: JwtPayload) {
     const post = await this.postRepo.findOneBy({ id: postId });
-
+    console.log(postId);
     if (!post) throw new NotFoundException('post not found');
 
     const checkPostLove = await this.postLove.findOneBy({
@@ -55,10 +55,25 @@ export class PostService {
     return 'success';
   }
 
-  findAll() {
-    return this.postRepo.find({
-      relations: { user: true, loves: true },
-    });
+  findAll(page: number) {
+    const perPage = 5;
+    const skip = (page - 1) * perPage;
+    return this.postRepo
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.loves', 'loves')
+      .leftJoinAndSelect('post.user', 'user')
+      .select([
+        'post.id',
+        'post.content',
+        'post.createdAt',
+        'user.id',
+        'user.picture',
+        'user.name',
+        'loves.userId',
+      ])
+      .take(perPage)
+      .skip(skip)
+      .getMany();
   }
 
   async findOne(id: number) {
