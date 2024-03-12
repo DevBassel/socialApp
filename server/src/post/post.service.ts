@@ -25,7 +25,8 @@ export class PostService {
 
   async lovePost(postId: number, user: JwtPayload) {
     const post = await this.postRepo.findOneBy({ id: postId });
-    console.log(postId);
+    console.log({ postId, user });
+
     if (!post) throw new NotFoundException('post not found');
 
     const checkPostLove = await this.postLove.findOneBy({
@@ -33,26 +34,16 @@ export class PostService {
       userId: user.sub,
     });
 
-    if (checkPostLove) {
+    if (checkPostLove && checkPostLove.userId === user.sub) {
       // remove love
-      this.postLove.delete({ postId });
+      return this.postLove.delete({ id: checkPostLove.id, userId: user.sub });
     } else {
       // create love
-      if (post.userId !== user.sub) {
-        const from = await this.userService.findOne(user.sub);
-
-        this.notificationServices.create({
-          content: `${from.name} loved your post <3`,
-          fromId: user.sub,
-          toId: post.userId,
-        });
-      }
-      this.postLove.save({
+      return this.postLove.save({
         postId,
         userId: user.sub,
       });
     }
-    return 'success';
   }
 
   findAll(page: number) {
@@ -69,8 +60,10 @@ export class PostService {
         'user.id',
         'user.picture',
         'user.name',
+        'loves.id',
         'loves.userId',
       ])
+      .orderBy('post.createdAt', 'DESC')
       .take(perPage)
       .skip(skip)
       .getMany();

@@ -22,7 +22,6 @@ export default function Loading({ className }: { className?: string }) {
           ></animate>
         </path>
       </svg>
-      ;
     </div>
   );
 }

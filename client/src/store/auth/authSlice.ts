@@ -6,7 +6,6 @@ export interface Auth {
 }
 
 interface State {
-  access_token: null;
   userData: Auth | null;
   error: unknown;
   loading: boolean;
@@ -20,7 +19,6 @@ const initialState: State = {
   userData: auth,
   error: "",
   loading: false,
-  access_token: null,
 };
 
 const authSlice = createSlice({

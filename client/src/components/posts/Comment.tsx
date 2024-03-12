@@ -12,27 +12,16 @@ import {
 import { Comment as CommentI } from "../../store/posts/post-interfaces";
 import { MenuSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import {
-  removeComment,
-  updateComment,
-} from "../../store/comments/commentsActions";
-import Swal from "sweetalert2";
-import { resetComment } from "../../store/comments/commentsSlice";
+import React, { useState } from "react";
 
 interface CommentProp extends CommentI {}
 
-export default function Comment({ content, id, createdAt, user }: CommentProp) {
+export default function Comment({ content, createdAt, user }: CommentProp) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [disableEdit, setDisableEdit] = useState(true);
   const [commentContent, setCommentContent] = useState(content);
-
-  const { msg, error } = useSelector((state: RootState) => state.comment);
-  const dispatch: AppDispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -40,22 +29,7 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const cuurentUser = useSelector((state: RootState) => state.auth.user);
 
-  useEffect(() => {
-    if (msg) {
-      Swal.fire({
-        title: msg,
-        icon: "success",
-      }).then(() => dispatch(resetComment()));
-    }
-    if (error) {
-      Swal.fire({
-        title: error,
-        icon: "error",
-      }).then(() => dispatch(resetComment()));
-    }
-  }, [dispatch, error, msg]);
   return (
     <>
       <Box display={"flex"}>
@@ -73,36 +47,27 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
           </Typography>
         </Box>
 
-        {cuurentUser?.id === user.id ? (
-          <>
-            <Tooltip title="Options">
-              <IconButton
-                onClick={handleClick}
-                sx={{ margin: "10px 0", padding: 1, height: 0 }}
-              >
-                <MenuSharp color="info" />
-              </IconButton>
-            </Tooltip>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-              <MenuItem
-                onClick={() => {
-                  setDisableEdit(false);
-                  handleClose();
-                }}
-              >
-                Edit
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  id && dispatch(removeComment(+id));
-                  handleClose();
-                }}
-              >
-                Remove
-              </MenuItem>
-            </Menu>
-          </>
-        ) : null}
+        <>
+          <Tooltip title="Options">
+            <IconButton
+              onClick={handleClick}
+              sx={{ margin: "10px 0", padding: 1, height: 0 }}
+            >
+              <MenuSharp color="info" />
+            </IconButton>
+          </Tooltip>
+          <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+            <MenuItem
+              onClick={() => {
+                setDisableEdit(false);
+                handleClose();
+              }}
+            >
+              Edit
+            </MenuItem>
+            <MenuItem>Remove</MenuItem>
+          </Menu>
+        </>
       </Box>
       <Box ml={6}>
         <Input
@@ -115,16 +80,7 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
         />
         {!disableEdit && (
           <>
-            <Button
-              onClick={() => {
-                setDisableEdit(true);
-                id &&
-                  commentContent &&
-                  dispatch(updateComment({ content: commentContent, id }));
-              }}
-              sx={{ ml: 2 }}
-              variant="outlined"
-            >
+            <Button sx={{ ml: 2 }} variant="outlined">
               Edite
             </Button>
             <Button
