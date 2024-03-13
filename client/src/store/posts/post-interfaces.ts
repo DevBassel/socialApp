@@ -21,8 +21,9 @@ export interface Post {
   user: User;
   createdAt: string;
   updatedAt?: string;
-  comments: Comment[];
-  loves: Love[];
+  commentCount: number;
+  loveCount: number;
+  userLovePost: boolean;
 }
 
 export interface State {

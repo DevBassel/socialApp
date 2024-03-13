@@ -14,8 +14,22 @@ body {
 
 @layer components {
   .asideItem {
-    @apply text-xl flex items-center justify-start capitalize mt-2 rounded-md  font-extrabold;
+    @apply text-[16px] flex items-center justify-start capitalize mt-2 rounded-md  font-extrabold;
   }
+}
+
+.bg-main {
+  background: #101418;
+}
+.bg-sc {
+  background: #29323b;
+}
+.bg-tre {
+  background: #1976d2;
+}
+
+.sh {
+  box-shadow: 0 0 0 1px rgba(99, 99, 99, 0.2);
 }
 
 a {
@@ -30,6 +44,7 @@ a {
 
 ::-webkit-scrollbar {
   width: 1px;
+  height: 0;
   background-color: transparent;
 }
 

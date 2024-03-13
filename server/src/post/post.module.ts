@@ -8,9 +8,12 @@ import { User } from '../user/entities/user.entity';
 import { PostLove } from './entities/postLove.entity';
 import { NotificationService } from '../notification/notification.service';
 import { Notification } from '../notification/entities/notification.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post, User, PostLove, Notification])],
+  imports: [
+    TypeOrmModule.forFeature([Post, User, PostLove, Comment, Notification]),
+  ],
   controllers: [PostController],
   providers: [UserService, PostService, NotificationService],
 })

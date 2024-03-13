@@ -40,14 +40,17 @@ export class PostController {
   }
 
   @Get()
-  findAll(@Query('page', ParseIntPipe) page: number) {
+  findAll(
+    @Query('page', ParseIntPipe) page: number,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
     console.log(page);
-    return this.postService.findAll(page);
+    return this.postService.findAll(page, req.user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req: Request & { user: JwtPayload }) {
+    return this.postService.findOne(+id, req.user);
   }
 
   @Post('love')

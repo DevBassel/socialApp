@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const user = await this.userRepo.findOneBy({
       id: payload.sub,
     });
-
+    console.log(payload);
     if (user) return { sub: user.id, email: payload.email, name: payload.name };
 
     throw new UnauthorizedException();

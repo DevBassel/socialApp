@@ -8,6 +8,8 @@ import { ClientId } from "./utils/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Error404 from "./components/Error404";
 import Nav from "./components/nav/Nav";
+import AddPostModel from "./components/posts/addPostModel";
+import Loading from "./components/common/loading";
 
 function App() {
   const darkTheme = createTheme({
@@ -15,6 +17,7 @@ function App() {
       mode: "dark",
     },
   });
+
   return (
     <ThemeProvider theme={darkTheme}>
       <Box position={"relative"}>
@@ -32,7 +35,16 @@ function App() {
               </GoogleOAuthProvider>
             }
           />
-          <Route path="/posts/:postId" element={<ViewPost />} />
+          <Route
+            path="/add-post"
+            loader={() => <Loading />}
+            element={<AddPostModel />}
+          />
+          <Route
+            path="/posts/:postId"
+            loader={() => <Loading />}
+            element={<ViewPost />}
+          />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Box>

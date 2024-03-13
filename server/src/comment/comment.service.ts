@@ -46,11 +46,40 @@ export class CommentService {
       });
       this.NotifyRepo.save(notification);
     }
-    return this.commentRepo.save(comment);
+    await this.commentRepo.save(comment);
+    return {
+      content: comment.content,
+      createdAt: comment.createdAt,
+      user: {
+        id: fromUser.id,
+        picture: fromUser.picture,
+        name: fromUser.name,
+      },
+    };
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findAll(page, postId: number) {
+    const post = await this.postRepo.findOneBy({ id: postId });
+    const perPage = 6;
+    const skip = (page - 1) * perPage;
+    if (!post) throw new NotFoundException();
+
+    return this.commentRepo
+      .createQueryBuilder('comment')
+      .where('comment.postId = :postId', { postId })
+      .leftJoinAndSelect('comment.user', 'user')
+      .select([
+        'comment.id',
+        'comment.content',
+        'comment.createdAt',
+        'user.id',
+        'user.name',
+        'user.picture',
+      ])
+      .orderBy('comment.createdAt', 'DESC')
+      .skip(skip)
+      .take(perPage)
+      .getMany();
   }
 
   findOne(id: number) {
@@ -65,9 +94,8 @@ export class CommentService {
     console.log(user);
     const comment: Comment = await this.commentRepo.findOneBy({
       id,
-      userId: user.sub,
     });
-
+    console.log(comment);
     if (!comment) throw new NotFoundException();
 
     return this.commentRepo.save({ ...comment, ...updateCommentDto });

@@ -28,6 +28,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { isRTL } from "../../utils/IsRtl";
 import axios from "axios";
 import { API } from "../../utils/api";
+import { AxiosConfig } from "../../utils/axiosConfig";
 
 export default function Post({
   id,
@@ -35,25 +36,21 @@ export default function Post({
   media,
   user,
   createdAt,
-  loves,
-  comments,
+  commentCount,
+  loveCount,
+  userLovePost,
 }: PostI) {
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.user.user);
-  const { userData } = useSelector((state: RootState) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
-  const checkUserLovePost = loves.find(
-    (item) => item.userId === currentUser?.id
-  );
 
   const [love, setLove] = useState<{
     active: boolean;
     count: number;
   }>({
-    active: Boolean(checkUserLovePost),
-    count: loves.length,
+    active: Boolean(userLovePost),
+    count: loveCount,
   });
 
   const currentPath = useLocation().pathname;
@@ -65,7 +62,6 @@ export default function Post({
     setAnchorEl(null);
   };
   const iconStyle: SxProps = { flexGrow: 1, borderRadius: 0 };
-  console.log(user.picture);
   return (
     <>
       <Box p={2} borderRadius={2}>
@@ -151,11 +147,7 @@ export default function Post({
               const { data } = await axios.post(
                 `${API}/posts/love`,
                 { postId: id },
-                {
-                  headers: {
-                    Authorization: `Bearer ${userData?.access_token}`,
-                  },
-                }
+                AxiosConfig
               );
               if (data) {
                 setLove({
@@ -170,7 +162,7 @@ export default function Post({
         >
           <FavoriteBorder fontSize="medium" />
           <Typography ml={2} variant="subtitle1">
-            {comments && loves && loves.length} {love.count}
+            {love.count}
           </Typography>
         </IconButton>
         <IconButton
@@ -182,7 +174,7 @@ export default function Post({
         >
           <ModeCommentTwoTone />
           <Typography ml={2} variant="subtitle1">
-            {comments && comments.length}
+            {commentCount}
           </Typography>
         </IconButton>
       </Box>

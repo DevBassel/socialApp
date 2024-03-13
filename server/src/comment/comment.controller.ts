@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -34,8 +35,11 @@ export class CommentController {
   }
 
   @Get()
-  findAll() {
-    return this.commentService.findAll();
+  findAll(
+    @Query('postId', ParseIntPipe) postId: number,
+    @Query('page', ParseIntPipe) page: number,
+  ) {
+    return this.commentService.findAll(page, postId);
   }
 
   @Get(':id')

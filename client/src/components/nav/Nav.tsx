@@ -27,25 +27,12 @@ export default function ButtonAppBar() {
 
   return (
     userData?.access_token && (
-      <AppBar
-        position="sticky"
-        sx={{
-          bgcolor: "#1976d2",
-          boxShadow: " rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-          top: 0,
-        }}
-      >
+      <AppBar className="sticky top-0 sh bg-tre">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <QuestionAnswer />
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
+          <Box className="flex items-center text-center">
             <NavItems />
             <Tooltip title="Account settings">
               <IconButton onClick={handleClick} size="small">

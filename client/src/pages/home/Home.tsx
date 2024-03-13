@@ -9,13 +9,18 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { FeedRounded, PeopleAltRounded, PostAdd } from "@mui/icons-material";
+import {
+  ChatRounded,
+  FeedRounded,
+  Groups,
+  PeopleAltRounded,
+  PostAdd,
+} from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMe } from "../../store/user/userActions";
-import AddPostModel from "../../components/posts/addPostModel";
 import Post from "../../components/posts/Post";
 import useGetPosts from "../../hooks/useGetPosts";
 import Loading from "../../components/common/loading";
@@ -25,9 +30,6 @@ function Home() {
   const { userData } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const [openAddPost, setOpenAddPost] = useState(false);
-  const handleOpenAddPost = () => setOpenAddPost(true);
-  const handleCloseAddPost = () => setOpenAddPost(false);
   const [more, setMore] = useState(false);
   const { isLoading, totalPosts, isDone } = useGetPosts({ more, setMore });
 
@@ -40,7 +42,6 @@ function Home() {
     }
   }, [dispatch, navigate, userData?.access_token]);
 
-  console.log(totalPosts);
   const gridStyle: GridProps = {
     padding: 2,
     borderRadius: 2,
@@ -49,47 +50,62 @@ function Home() {
     userData?.access_token && (
       <Grid
         container
-        maxWidth={"md"}
+        maxWidth={"xl"}
         p={1}
         justifyContent={"center"}
         margin={"auto"}
       >
         {
-          <Grid item xs={12} sm={4} {...gridStyle} position={"relative"}>
+          <Grid
+            item
+            xs={12}
+            sm={isMobile ? 12 : 3}
+            {...gridStyle}
+            position={"relative"}
+          >
             <Stack
-              sx={{ bgcolor: "#29323b" }}
               {...gridStyle}
               direction={isMobile ? "row" : "column"}
-              className="sticky top-20 w-full"
+              className="sticky top-20 bg-sc grow"
             >
               <IconButton
-                onClick={handleOpenAddPost}
+                onClick={() => navigate("/add-post")}
                 color="primary"
                 className="asideItem"
               >
                 <PostAdd className="mr-3" /> {!isMobile && "add post"}
               </IconButton>
-              <AddPostModel {...{ openAddPost, handleCloseAddPost }} />
 
               <IconButton color="primary" className="asideItem">
                 <PeopleAltRounded className="mr-3" /> {!isMobile && "friends"}
               </IconButton>
+
+              <IconButton color="primary" className="asideItem">
+                <Groups className="mr-3" /> {!isMobile && "find friends"}
+              </IconButton>
+
+              <IconButton color="primary" className="asideItem">
+                <ChatRounded className="mr-3" /> {!isMobile && "Chats"}
+              </IconButton>
             </Stack>
           </Grid>
         }
-        <Grid item xs={12} sm={8} {...gridStyle}>
-          <Typography variant="h5">
-            News <FeedRounded fontSize="small" />
-          </Typography>
-          <Divider sx={{ bgcolor: "gray", mb: 3 }} />
+
+        <Grid
+          item
+          xs={12}
+          sm={isMobile ? 12 : 6}
+          className="bg-sc md:h-[calc(100vh_-_80px)] pb-4 rounded-md overflow-scroll"
+        >
+          <Divider className="sticky bg-main z-20 sh w-full top-0">
+            <Typography variant="h5">
+              News <FeedRounded fontSize="small" />
+            </Typography>
+          </Divider>
           {totalPosts &&
             totalPosts.map((post) => (
-              <Box key={post.id} marginBlock={3}>
-                <Stack
-                  bgcolor={"#101418"}
-                  boxShadow={"0 0 0 1px rgba(99, 99, 99, 0.2)"}
-                  borderRadius={2}
-                >
+              <Box key={post.id} m={1}>
+                <Stack className="bg-main rounded-md sh">
                   <Post {...post} />
                 </Stack>
               </Box>
@@ -100,13 +116,26 @@ function Home() {
               onClick={() => {
                 setMore(true);
               }}
-              variant="outlined"
-              className="w-3/4 mx-auto block"
+              variant="contained"
+              color="success"
+              className="w-3/4 mx-auto block font-extrabold text-gray-800"
             >
               More Posts
             </Button>
           )}
         </Grid>
+
+        {!isMobile && (
+          <Grid item sm={3} {...gridStyle}>
+            <Stack
+              {...gridStyle}
+              direction={isMobile ? "row" : "column"}
+              className="sticky top-20 w-full bg-sc"
+            >
+              <Divider className="text-lime-400">Onlins</Divider>
+            </Stack>
+          </Grid>
+        )}
       </Grid>
     )
   );
