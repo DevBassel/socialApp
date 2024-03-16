@@ -13,7 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { RoleType } from '../enums/Roule.enum';
+import { RoleType } from '../../decorators/enums/Roule.enum';
 import { PostLove } from '../../post/entities/postLove.entity';
 import { Favorite } from '../../favorites/enteities/favorite.entity';
 import { ProviderType } from '../enums/ProviderType.enum';

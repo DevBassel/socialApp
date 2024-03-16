@@ -123,14 +123,15 @@ export class PostService {
     );
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
-    const checkPost = await this.postRepo.findBy({ id });
+  async update(id: number, updatePostDto: UpdatePostDto, user: JwtPayload) {
+    const checkPost = await this.findOne(id, user);
+
     if (!checkPost) throw new NotFoundException();
     return this.postRepo.save({ ...checkPost, ...updatePostDto });
   }
 
-  async remove(id: number) {
-    const checkPost = await this.postRepo.findOneBy({ id });
+  async remove(id: number, user: JwtPayload) {
+    const checkPost = await this.findOne(id, user);
     if (!checkPost) throw new NotFoundException();
     return this.postRepo.delete({ id });
   }

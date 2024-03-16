@@ -18,7 +18,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { JwtGuard } from 'src/auth/strategys/guards/jwt.guard';
 import { RoleGuard } from '../auth/strategys/guards/role.guard';
 import { Role } from '../decorators/role.decorator';
-import { RoleType } from '../user/enums/Roule.enum';
+import { RoleType } from '../decorators/enums/Roule.enum';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtPayload } from '../auth/dto/jwtPayload';
 
@@ -62,12 +62,16 @@ export class PostController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+  update(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+    @Req() req: Request & { user: JwtPayload },
+  ) {
+    return this.postService.update(+id, updatePostDto, req.user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: Request & { user: JwtPayload }) {
+    return this.postService.remove(+id, req.user);
   }
 }

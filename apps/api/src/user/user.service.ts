@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRes } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
@@ -11,32 +15,30 @@ export class UserService {
   ) {}
 
   async getMe(user: JwtPayload) {
-    console.log(user);
     return new UserRes(
       await this.userRepo.findOne({
         where: {
           id: user.sub,
         },
-        select: [
-          'id',
-          'name',
-          'email',
-          'picture',
-          'role',
-          'updatedAt',
-          'createdAt',
-        ],
+        select: ['id', 'name', 'email', 'picture', 'role', 'createdAt'],
       }),
     );
   }
 
-  findOne(id: number) {
-    return this.userRepo.findOneBy({ id });
+  async findOne(id: number) {
+    const user = await this.userRepo.findOneBy({ id });
+
+    if (!user) throw new NotFoundException();
+
+    return user;
   }
 
-  async removeUser({ email }: any) {
+  async removeUser({ email, sub }: JwtPayload) {
     if (!email) throw new BadRequestException();
-    const user: DeleteResult = await this.userRepo.delete({ email });
-    return user;
+    const deleteUser: DeleteResult = await this.userRepo.delete({
+      email,
+      id: sub,
+    });
+    return deleteUser;
   }
 }

@@ -95,7 +95,7 @@ function Home() {
           item
           xs={12}
           sm={isMobile ? 12 : 6}
-          className="bg-sc md:h-[calc(100vh_-_80px)] pb-4 rounded-md overflow-scroll"
+          className="bg-sc pb-4 rounded-md overflow-scroll"
         >
           <Divider className="sticky bg-main z-20 sh w-full top-0">
             <Typography variant="h5">
