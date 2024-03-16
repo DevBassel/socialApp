@@ -9,5 +9,9 @@
   },
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "dependencies": {
+    "@nestjs/serve-static": "^4.0.1",
+    "api": "^6.1.1"
+  }
 }
