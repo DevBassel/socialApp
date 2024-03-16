@@ -9,9 +9,14 @@ import { NotificationModule } from './notification/notification.module';
 import { CommentModule } from './comment/comment.module';
 import { ChatModule } from './chat/chat.module';
 import { FavoriteModule } from './favorites/favorite.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'client/dist'),
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule,
     AuthModule,

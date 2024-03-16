@@ -4,7 +4,8 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "start": "turbo run build && node apps/api/dist/main"
   },
   "workspaces": [
     "apps/*"
