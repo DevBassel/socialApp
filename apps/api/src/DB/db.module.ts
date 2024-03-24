@@ -16,12 +16,7 @@ import { FileLogger } from 'typeorm';
         synchronize: true,
         autoLoadEntities: true,
         logging: true,
-        logger:
-          process.env.NODE_ENV === 'dev'
-            ? new FileLogger('all', {
-                logPath: `./apps/api/logs/db.log`,
-              })
-            : 'file',
+        logger: 'file',
       }),
       inject: [ConfigService],
     }),
