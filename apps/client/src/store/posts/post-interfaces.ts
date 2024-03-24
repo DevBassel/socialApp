@@ -24,6 +24,7 @@ export interface Post {
   commentCount: number;
   loveCount: number;
   userLovePost: boolean;
+  userFavPost: boolean;
 }
 
 export interface State {

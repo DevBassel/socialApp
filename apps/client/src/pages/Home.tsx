@@ -6,29 +6,25 @@ import {
   GridProps,
   IconButton,
   Stack,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
-import {
-  ChatRounded,
-  FeedRounded,
-  Groups,
-  PeopleAltRounded,
-  PostAdd,
-} from "@mui/icons-material";
+import { PeopleAltRounded, StarBorderSharp } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import { useEffect, useState } from "react";
+import { AppDispatch, RootState } from "../store";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMe } from "../../store/user/userActions";
-import Post from "../../components/posts/Post";
-import useGetPosts from "../../hooks/useGetPosts";
-import Loading from "../../components/common/loading";
+import { getMe } from "../store/user/userActions";
+import Post from "../components/posts/Post";
+import useGetPosts from "../hooks/useGetPosts";
+import Loading from "../components/common/loading";
+import useIsShow from "../hooks/useIsShow";
 
 function Home() {
-  const isMobile = useMediaQuery("(max-width: 700px)");
+  const isMobile = useMediaQuery("(max-width: 900px)");
   const { userData } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
+  const loadMoreRef = useRef(null);
+  const isShow = useIsShow(loadMoreRef);
   const navigate = useNavigate();
   const [more, setMore] = useState(false);
   const { isLoading, totalPosts, isDone } = useGetPosts({ more, setMore });
@@ -41,6 +37,12 @@ function Home() {
       dispatch(getMe());
     }
   }, [dispatch, navigate, userData?.access_token]);
+
+  useEffect(() => {
+    if (!isDone && isShow) {
+      setMore(true);
+    }
+  }, [isDone, isShow]);
 
   const gridStyle: GridProps = {
     padding: 2,
@@ -55,7 +57,7 @@ function Home() {
         justifyContent={"center"}
         margin={"auto"}
       >
-        {
+        {!isMobile && (
           <Grid
             item
             xs={12}
@@ -68,51 +70,37 @@ function Home() {
               direction={isMobile ? "row" : "column"}
               className="sticky top-20 bg-sc grow"
             >
+              <IconButton color="primary" className="asideItem">
+                <PeopleAltRounded className="mr-3" /> friends
+              </IconButton>
+
               <IconButton
-                onClick={() => navigate("/add-post")}
                 color="primary"
                 className="asideItem"
+                onClick={() => navigate("/favorites")}
               >
-                <PostAdd className="mr-3" /> {!isMobile && "add post"}
-              </IconButton>
-
-              <IconButton color="primary" className="asideItem">
-                <PeopleAltRounded className="mr-3" /> {!isMobile && "friends"}
-              </IconButton>
-
-              <IconButton color="primary" className="asideItem">
-                <Groups className="mr-3" /> {!isMobile && "find friends"}
-              </IconButton>
-
-              <IconButton color="primary" className="asideItem">
-                <ChatRounded className="mr-3" /> {!isMobile && "Chats"}
+                <StarBorderSharp className="mr-3" /> favorites
               </IconButton>
             </Stack>
           </Grid>
-        }
+        )}
 
         <Grid
           item
           xs={12}
-          sm={isMobile ? 12 : 6}
-          className="bg-sc pb-4 rounded-md overflow-scroll"
+          sm={isMobile ? 12 : 5}
+          className=" pb-4 rounded-md overflow-scroll"
         >
-          <Divider className="sticky bg-main z-20 sh w-full top-0">
-            <Typography variant="h5">
-              News <FeedRounded fontSize="small" />
-            </Typography>
-          </Divider>
           {totalPosts &&
             totalPosts.map((post) => (
               <Box key={post.id} m={1}>
-                <Stack className="bg-main rounded-md sh">
-                  <Post {...post} />
-                </Stack>
+                <Post {...post} />
               </Box>
             ))}
           {isLoading && <Loading className="w-60 h-60  mx-auto " />}
           {!isDone && (
             <Button
+              ref={loadMoreRef}
               onClick={() => {
                 setMore(true);
               }}

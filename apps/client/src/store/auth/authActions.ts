@@ -11,6 +11,7 @@ export const LoginGoogle = createAsyncThunk(
         access_token: credential,
       });
       localStorage.setItem("user_data", JSON.stringify(data));
+      location.reload();
       return data;
     } catch (error) {
       return rejectWithValue(handleAxiosError(error));
@@ -21,4 +22,5 @@ export const LoginGoogle = createAsyncThunk(
 export const LogoutAction = () => {
   localStorage.removeItem("user_data");
   localStorage.removeItem("user-info");
+  location.reload();
 };

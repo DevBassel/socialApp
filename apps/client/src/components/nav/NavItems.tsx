@@ -2,8 +2,10 @@ import {
   HomeRounded,
   MessageRounded,
   NotificationsActiveRounded,
+  PeopleAltRounded,
+  PostAdd,
 } from "@mui/icons-material";
-import { Badge, IconButton, Tooltip } from "@mui/material";
+import { Badge, Box, IconButton, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Notifications from "../notifications/Notifications";
 import React from "react";
@@ -51,18 +53,43 @@ export default function NavItems() {
       },
       count: 0,
     },
+    {
+      title: "Add Post",
+      color: "error",
+      icone: <PostAdd />,
+      handel: () => {
+        navigate("/add-post");
+      },
+    },
+    {
+      title: "Friends",
+      color: "error",
+      icone: <PeopleAltRounded />,
+      handel: () => {
+        navigate("/friends");
+      },
+    },
   ];
   return (
-    <>
+    <Box className="w-fit mx-auto">
       {navItems.map((item) => (
-        <Tooltip key={item.title} title={item.title} sx={{ mr: 1.6 }}>
+        <Tooltip
+          key={item.title}
+          title={item.title}
+          className="mx-0.5 md:mx-0.5"
+        >
           <Badge badgeContent={item.count} max={9} color="error">
-            <IconButton onClick={item?.handel}>{item.icone}</IconButton>
+            <IconButton
+              className="md:px-8 px-4 rounded-md"
+              onClick={item?.handel}
+            >
+              {item.icone}
+            </IconButton>
           </Badge>
         </Tooltip>
       ))}
       <Notifications {...{ openNotifications, handleCloseNotifications }} />
       <Messages {...{ openMessages, handleCloseMessages }} />
-    </>
+    </Box>
   );
 }

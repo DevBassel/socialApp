@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "turbo": "^1.12.5"
+    "turbo": "^1.13.0"
   },
   "scripts": {
     "dev": "turbo run dev",
@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "@nestjs/serve-static": "^4.0.1",
-    "api": "^6.1.1"
+    "api": "^6.1.1",
+    "morgan": "^1.10.0"
   }
 }

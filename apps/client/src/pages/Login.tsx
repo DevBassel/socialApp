@@ -1,8 +1,8 @@
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
+import { AppDispatch, RootState } from "../store";
 import { useGoogleLogin } from "@react-oauth/google";
-import { LoginGoogle } from "../../store/auth/authActions";
+import { LoginGoogle } from "../store/auth/authActions";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@mui/icons-material";

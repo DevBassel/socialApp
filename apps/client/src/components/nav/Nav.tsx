@@ -29,13 +29,26 @@ export default function ButtonAppBar() {
     userData?.access_token && (
       <AppBar className="sticky top-0 sh bg-tre">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6">
             <QuestionAnswer />
           </Typography>
-          <Box className="flex items-center text-center">
+
+          <Box className="grow justify-center items-center">
             <NavItems />
-            <Tooltip title="Account settings">
-              <IconButton onClick={handleClick} size="small">
+          </Box>
+          <Box className="flex items-center text-center">
+            <Tooltip title={user?.name}>
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                className="rounded-md"
+              >
+                <Typography
+                  variant="body1"
+                  className="hidden md:flex mx-0 md:mx-4 "
+                >
+                  {user?.name}
+                </Typography>
                 <Avatar src={user?.picture} />
               </IconButton>
             </Tooltip>

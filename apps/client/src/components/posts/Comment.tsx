@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   IconButton,
   Input,
   Menu,
@@ -12,7 +13,7 @@ import {
 import { Comment as CommentI } from "../../store/posts/post-interfaces";
 import { MenuSharp } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import axios from "axios";
@@ -28,6 +29,7 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
   const [disableEdit, setDisableEdit] = useState(true);
   const [commentContent, setCommentContent] = useState(content);
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const commentRef = useRef<HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,7 +39,7 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
   };
 
   return (
-    <>
+    <Box className="sh p-2 rounded-xl my-2" ref={commentRef}>
       <Box className="flex">
         <Avatar src={user.picture} />
         <Box ml={2} mb={3} display={"flex"} flexGrow={1} alignItems={"center"}>
@@ -56,7 +58,7 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
         {user.id === currentUser?.id && (
           <>
             <Tooltip title="Options">
-              <IconButton onClick={handleClick}>
+              <IconButton className="rounded-md h-fit" onClick={handleClick}>
                 <MenuSharp color="info" />
               </IconButton>
             </Tooltip>
@@ -64,16 +66,31 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
               <MenuItem
                 onClick={() => {
                   setDisableEdit(false);
+                  console.log(id);
                   handleClose();
                 }}
               >
                 Edit
               </MenuItem>
-              <MenuItem>Remove</MenuItem>
+              <MenuItem
+                onClick={async () => {
+                  try {
+                    await axios.delete(`${API}/comments/${id}`, AxiosConfig);
+
+                    commentRef.current && commentRef.current.remove();
+                  } catch (error) {
+                    console.log(error);
+                  }
+                  handleClose();
+                }}
+              >
+                <span className="text-red-600">Remove</span>
+              </MenuItem>
             </Menu>
           </>
         )}
       </Box>
+
       <Box className="flex justify-between ml-12">
         <Input
           className="grow  break-all "
@@ -85,9 +102,8 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
           disabled={disableEdit}
         />
         {!disableEdit && (
-          <>
+          <ButtonGroup variant="contained">
             <Button
-              variant="outlined"
               onClick={async () => {
                 try {
                   const { data } = await axios.patch(
@@ -112,14 +128,13 @@ export default function Comment({ content, id, createdAt, user }: CommentProp) {
                 setCommentContent(content);
                 setDisableEdit(true);
               }}
-              variant="outlined"
-              color="error"
+              color="warning"
             >
               Cancel
             </Button>
-          </>
+          </ButtonGroup>
         )}
       </Box>
-    </>
+    </Box>
   );
 }

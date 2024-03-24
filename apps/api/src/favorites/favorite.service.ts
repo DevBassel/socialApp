@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Favorite, FavoriteResponse } from './enteities/favorite.entity';
+import { Favorite } from './enteities/favorite.entity';
 import { Repository } from 'typeorm';
 import { JwtPayload } from '../auth/dto/jwtPayload';
 
@@ -17,27 +17,35 @@ export class FavoriteService {
         postId,
         userId: user.sub,
       });
-      return 'removed success';
+      return { status: false };
     } else {
       // add to fav
       this.favRepo.save({
         postId,
         userId: user.sub,
       });
-      return 'add success';
+
+      return { status: true };
     }
   }
 
   async getFavoriets(user: JwtPayload) {
-    const favs = await this.favRepo.find({
-      where: {
-        userId: user.sub,
-      },
-      relations: {
-        post: true,
-      },
-    });
+    const favs = await this.favRepo
+      .createQueryBuilder('fav')
+      .where('fav.userId = :id', { id: user.sub })
+      .leftJoinAndSelect('fav.post', 'post')
+      .leftJoinAndSelect('post.user', 'user')
+      .select([
+        'fav.id',
+        'post.id',
+        'post.content',
+        'post.createdAt',
+        'user.id',
+        'user.name',
+        'user.picture',
+      ])
+      .getMany();
 
-    return favs.map((fav) => new FavoriteResponse(fav));
+    return favs;
   }
 }

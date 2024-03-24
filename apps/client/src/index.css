@@ -14,7 +14,7 @@ body {
 
 @layer components {
   .asideItem {
-    @apply text-[16px] flex items-center justify-start capitalize mt-2 rounded-md  font-extrabold;
+    @apply text-[16px] flex items-center justify-start capitalize  rounded-md  font-extrabold;
   }
 }
 

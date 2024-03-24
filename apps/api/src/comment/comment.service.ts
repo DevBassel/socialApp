@@ -48,6 +48,7 @@ export class CommentService {
     }
     await this.commentRepo.save(comment);
     return {
+      id: comment.id,
       content: comment.content,
       createdAt: comment.createdAt,
       user: {

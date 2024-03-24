@@ -60,6 +60,7 @@ export class PostService {
         // count of comments
         .leftJoin('post.comments', 'comments')
         .loadRelationCountAndMap('post.commentCount', 'post.comments')
+
         // count of loves
         .leftJoin('post.loves', 'loves')
         .loadRelationCountAndMap('post.loveCount', 'post.loves')
@@ -70,6 +71,14 @@ export class PostService {
           'post.loves',
           'postLove',
           'postLove.userId = :userId',
+          { userId: user.sub },
+        )
+        // check user fav post
+        .leftJoinAndMapOne(
+          'post.userFavPost',
+          'post.fav',
+          'postFav',
+          'postFav.userId = :userId',
           { userId: user.sub },
         )
         .select([
@@ -81,6 +90,7 @@ export class PostService {
           'user.name',
           'postLove.id',
           'postLove.userId',
+          'postFav.id',
         ])
         .orderBy('post.createdAt', 'DESC')
         .take(perPage)
@@ -90,37 +100,48 @@ export class PostService {
   }
 
   async findOne(id: number, user: JwtPayload) {
-    return (
-      this.postRepo
-        .createQueryBuilder('post')
-        .leftJoinAndSelect('post.user', 'user')
-        .where('post.id = :id', { id })
-        // count of comments
-        .leftJoin('post.comments', 'comments')
-        .loadRelationCountAndMap('post.commentCount', 'post.comments')
-        // count of loves
-        .leftJoin('post.loves', 'loves')
-        .loadRelationCountAndMap('post.loveCount', 'post.loves')
+    const post = await this.postRepo
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('post.id = :id', { id })
+      // count of comments
+      .leftJoin('post.comments', 'comments')
+      .loadRelationCountAndMap('post.commentCount', 'post.comments')
+      // count of loves
+      .leftJoin('post.loves', 'loves')
+      .loadRelationCountAndMap('post.loveCount', 'post.loves')
 
-        // check if current user love post
-        .leftJoinAndMapOne(
-          'post.userLovePost',
-          'post.loves',
-          'postLove',
-          'postLove.userId = :userId',
-          { userId: user.sub },
-        )
-        .select([
-          'post.id',
-          'post.content',
-          'post.createdAt',
-          'user.id',
-          'user.picture',
-          'user.name',
-          'postLove.userId',
-        ])
-        .getOne()
-    );
+      // check if current user love post
+      .leftJoinAndMapOne(
+        'post.userLovePost',
+        'post.loves',
+        'postLove',
+        'postLove.userId = :userId',
+        { userId: user.sub },
+      )
+      // check user fav post
+      .leftJoinAndMapOne(
+        'post.userFavPost',
+        'post.fav',
+        'postFav',
+        'postFav.userId = :userId',
+        { userId: user.sub },
+      )
+      .select([
+        'post.id',
+        'post.content',
+        'post.createdAt',
+        'user.id',
+        'user.picture',
+        'user.name',
+        'postLove.userId',
+        'postFav.id',
+      ])
+      .getOne();
+
+    if (!post) throw new NotFoundException();
+
+    return post;
   }
 
   async update(id: number, updatePostDto: UpdatePostDto, user: JwtPayload) {

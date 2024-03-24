@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FileLogger } from 'typeorm';
 
 @Module({
   imports: [
@@ -15,7 +16,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: true,
         autoLoadEntities: true,
         logging: true,
-        logger: 'file',
+        logger: new FileLogger('all', {
+          logPath: `./apps/api/logs/db.log`,
+        }),
       }),
       inject: [ConfigService],
     }),

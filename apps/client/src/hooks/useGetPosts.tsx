@@ -37,8 +37,9 @@ export default function useGetPosts({
           AxiosConfig
         );
 
-        if (data.length > 0) {
+        if (data.length) {
           setTotalPosts((prevTotalPosts) => [...prevTotalPosts, ...data]);
+          if (data.length < 5) setIsDone(true);
         } else {
           setIsDone(true);
         }
