@@ -3,12 +3,12 @@ import { AddAPhotoRounded } from "@mui/icons-material";
 import MDEditor from "@uiw/react-md-editor";
 import { ChangeEvent, useState } from "react";
 import { Button, Stack } from "@mui/material";
-import { handleImageUpload } from "../../utils/handelImage";
-import { isRTL } from "../../utils/IsRtl";
-import Loading from "../common/loading";
+import { handleImageUpload } from "../utils/handelImage";
+import { isRTL } from "../utils/IsRtl";
+import Loading from "../components/common/loading";
 import axios from "axios";
-import { API } from "../../utils/api";
-import { AxiosConfig } from "../../utils/axiosConfig";
+import { API } from "../utils/api";
+import { AxiosConfig } from "../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 export default function AddPostModel() {

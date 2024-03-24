@@ -3,12 +3,12 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
-import ViewPost from "./components/posts/ViewPost";
+import ViewPost from "./pages/ViewPost";
 import { ClientId } from "./utils/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Error404 from "./components/Error404";
+import Error404 from "./pages/Error404";
 import Nav from "./components/nav/Nav";
-import AddPostModel from "./components/posts/addPostModel";
+import AddPostModel from "./pages/addPostModel";
 import Loading from "./components/common/loading";
 import Favorit from "./pages/Favorit";
 

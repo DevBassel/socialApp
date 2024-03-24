@@ -5,9 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { Post } from '../post/entities/post.entity';
-import { Notification } from '../notification/entities/notification.entity';
 import { User } from '../user/entities/user.entity';
 import { JwtPayload } from '../auth/dto/jwtPayload';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class CommentService {
@@ -16,8 +16,7 @@ export class CommentService {
     private readonly commentRepo: Repository<Comment>,
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(Notification)
-    private readonly NotifyRepo: Repository<Notification>,
+    private readonly notifyServices: NotificationService,
   ) {}
 
   async create(createCommentDto: CreateCommentDto, user: JwtPayload) {
@@ -29,24 +28,26 @@ export class CommentService {
 
     if (!post) throw new NotFoundException();
 
-    const fromUser: User = await this.userRepo.findOneBy({ id: user.sub });
+    const fromUser = await this.userRepo
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.name'])
+      .getOne();
 
-    const comment: Comment = this.commentRepo.create({
+    const comment = await this.commentRepo.save({
       postId: post.id,
-      user: fromUser,
+      userId: fromUser.id,
       content: createCommentDto.content,
       media: createCommentDto.media,
     });
 
     if (user.sub !== post.userId) {
-      const notification: Notification = this.NotifyRepo.create({
+      await this.notifyServices.create({
         content: `${fromUser.name} has add comment in your post`,
-        from: fromUser,
+        fromId: fromUser.id,
         toId: post.userId,
       });
-      this.NotifyRepo.save(notification);
     }
-    await this.commentRepo.save(comment);
+
     return {
       id: comment.id,
       content: comment.content,

@@ -8,16 +8,16 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import Post from "./Post";
+import Post from "../components/posts/Post";
 import axios from "axios";
-import { API } from "../../utils/api";
-import { AxiosConfig } from "../../utils/axiosConfig";
-import { Comment as CommentI } from "../../store/posts/post-interfaces";
-import Comment from "./Comment";
-import { handleAxiosError } from "../../utils/handelError";
-import useGetPostComments from "../../hooks/useGetPostComments";
-import Loading from "../common/loading";
-import useIsShow from "../../hooks/useIsShow";
+import { API } from "../utils/api";
+import { AxiosConfig } from "../utils/axiosConfig";
+import { Comment as CommentI } from "../store/posts/post-interfaces";
+import Comment from "../components/posts/Comment";
+import { handleAxiosError } from "../utils/handelError";
+import useGetPostComments from "../hooks/useGetPostComments";
+import Loading from "../components/common/loading";
+import useIsShow from "../hooks/useIsShow";
 
 export default function ViewPost() {
   const { postId } = useParams();
