@@ -1,7 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
 import { Comment, Post } from "../store/posts/post-interfaces";
 import { API } from "../utils/api";
 import { AxiosConfig } from "../utils/axiosConfig";
@@ -16,7 +14,6 @@ export default function useGetPostComments({
   postId: number;
   setMore(val: boolean): void;
 }) {
-  const { userData } = useSelector((state: RootState) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [error, setError] = useState<number>();
@@ -26,8 +23,6 @@ export default function useGetPostComments({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userData) navigate("/login");
-
     (async () => {
       try {
         const { data } = await axios.get(`${API}/posts/${postId}`, AxiosConfig);
@@ -40,7 +35,7 @@ export default function useGetPostComments({
         }
       }
     })();
-  }, [navigate, postId, userData]);
+  }, [navigate, postId]);
 
   useEffect(() => {
     if (more) {
@@ -74,10 +69,8 @@ export default function useGetPostComments({
       }
     };
 
-    if (userData?.access_token && post?.id) {
-      fetchData();
-    }
-  }, [pageNum, post?.id, postId, userData?.access_token]);
+    fetchData();
+  }, [pageNum, post?.id, postId]);
 
   return { isLoading, error, totalComments, isDone, post };
 }

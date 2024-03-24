@@ -6,7 +6,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import Post from "../components/posts/Post";
 import axios from "axios";
@@ -17,7 +17,6 @@ import Comment from "../components/posts/Comment";
 import { handleAxiosError } from "../utils/handelError";
 import useGetPostComments from "../hooks/useGetPostComments";
 import Loading from "../components/common/loading";
-import useIsShow from "../hooks/useIsShow";
 
 export default function ViewPost() {
   const { postId } = useParams();
@@ -26,7 +25,6 @@ export default function ViewPost() {
   const [more, setMore] = useState(false);
 
   const loadMoreRef = useRef(null);
-  const isShow = useIsShow(loadMoreRef);
   const { isDone, isLoading, totalComments, error, post } = useGetPostComments({
     more,
     setMore,
@@ -54,17 +52,10 @@ export default function ViewPost() {
       setTextValue("");
     }
   };
-  console.log(comments);
 
   const getTextValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextValue(e.target.value);
   };
-
-  useEffect(() => {
-    if (!isDone && isShow) {
-      setMore(true);
-    }
-  }, [isDone, isShow]);
 
   if (error === 404) {
     return <Navigate to={"/post-not-found"} />;

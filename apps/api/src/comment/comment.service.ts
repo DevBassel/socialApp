@@ -30,6 +30,7 @@ export class CommentService {
 
     const fromUser = await this.userRepo
       .createQueryBuilder('user')
+      .where('user.id = :id', { id: user.sub })
       .select(['user.id', 'user.name'])
       .getOne();
 

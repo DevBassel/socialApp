@@ -6,7 +6,7 @@ import { Box, ThemeProvider, createTheme } from "@mui/material";
 import ViewPost from "./pages/ViewPost";
 import { ClientId } from "./utils/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Error404 from "./pages/Error404";
+import Error404 from "./components/Error404";
 import Nav from "./components/nav/Nav";
 import AddPostModel from "./pages/addPostModel";
 import Loading from "./components/common/loading";

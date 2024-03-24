@@ -17,14 +17,12 @@ import { getMe } from "../store/user/userActions";
 import Post from "../components/posts/Post";
 import useGetPosts from "../hooks/useGetPosts";
 import Loading from "../components/common/loading";
-import useIsShow from "../hooks/useIsShow";
 
 function Home() {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const { userData } = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
   const loadMoreRef = useRef(null);
-  const isShow = useIsShow(loadMoreRef);
   const navigate = useNavigate();
   const [more, setMore] = useState(false);
   const { isLoading, totalPosts, isDone } = useGetPosts({ more, setMore });
@@ -37,12 +35,6 @@ function Home() {
       dispatch(getMe());
     }
   }, [dispatch, navigate, userData?.access_token]);
-
-  useEffect(() => {
-    if (!isDone && isShow) {
-      setMore(true);
-    }
-  }, [isDone, isShow]);
 
   const gridStyle: GridProps = {
     padding: 2,
