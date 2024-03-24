@@ -61,6 +61,7 @@ export default function ViewPost() {
     return <Navigate to={"/post-not-found"} />;
   }
 
+  console.log(totalComments);
   return (
     <div className="container mx-auto p-3 block lg:flex overflow-scroll basis-auto justify-between lg:h-[calc(100vh_-_65px)]   relative">
       <Stack className="flex md:sticky h-fit top-0 grow-[0.9] overflow-scroll flex-col rounded-md sh">

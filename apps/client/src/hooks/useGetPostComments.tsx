@@ -54,7 +54,7 @@ export default function useGetPostComments({
         );
 
         if (data.length > 0) {
-          setTotalComments((prevTotalPosts) => [...prevTotalPosts, ...data]);
+          setTotalComments((prev) => [...prev, ...data]);
           if (data.length < 5) setIsDone(true);
         } else {
           setIsDone(true);
@@ -70,7 +70,7 @@ export default function useGetPostComments({
     };
 
     fetchData();
-  }, [pageNum, post?.id, postId]);
+  }, [pageNum, postId]);
 
   return { isLoading, error, totalComments, isDone, post };
 }
